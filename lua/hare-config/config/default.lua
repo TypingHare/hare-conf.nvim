@@ -14,5 +14,19 @@ return {
     sign_column = { show = true },
     fill_chars = ' ',
     cursor_line_highlight = true,
+    color_column = {
+      enabled = true,
+      disabled_filetypes = {
+        'lazy',
+        'mason',
+        'help',
+        'netrw',
+        'neo-tree',
+        'checkhealth',
+        'lspinfo',
+        'noice',
+        'Trouble',
+      },
+    },
   },
 }

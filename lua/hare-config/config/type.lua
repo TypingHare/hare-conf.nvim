@@ -14,12 +14,17 @@
 ---@class HareConfigEditorSignColumn
 ---@field show boolean
 
+---@class HareConfigEditorColorColumn
+---@field enabled boolean
+---@field disabled_filetypes string[]
+
 ---@class HareConfigEditor
 ---@field tab HareConfigEditorTab
 ---@field line_number HareConfigEditorLineNumber
 ---@field sign_column HareConfigEditorSignColumn
 ---@field fill_chars string
 ---@field cursor_line_highlight boolean
+---@field color_column HareConfigEditorColorColumn
 
 ---@class HareConfig
 ---@field ui HareConfigUI

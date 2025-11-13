@@ -6,6 +6,9 @@ M.NEOCONF_KEY = 'HareConfig'
 -- Default Hare configuration
 M.default = require 'hare-config.config.default'
 
+-- Final Hare configuration
+M.config = M.default
+
 --- Retrieves the current Neoconf user configuration safely.
 ---
 --- @return table user_config The Neoconf configuration or an empty table if
@@ -21,8 +24,12 @@ M.get_neoconf_config = function()
   return user_config
 end
 
--- Final Hare configuration
-M.config = vim.tbl_deep_extend('force', M.default, M.get_neoconf_config())
+---Updates hare configuration.
+---
+---@param new_config table
+M.update_config = function(new_config)
+  M.config = vim.tbl_deep_extend('force', M.config, new_config)
+end
 
 --- Applies UI settings.
 ---
@@ -57,6 +64,7 @@ end
 
 --- Sets up Hare configuration by applying all settings.
 M.setup = function()
+  M.update_config(M.get_neoconf_config())
   M.apply_all_settings(M.config)
 end
 
