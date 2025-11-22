@@ -2,6 +2,7 @@
 return {
   ui = {
     disable_netrw = false,
+    color_scheme = 'default',
   },
   editor = {
     tab = {
@@ -28,5 +29,13 @@ return {
         'Trouble',
       },
     },
+  },
+  keymap = {},
+  clipboard = {
+    enabled = false,
+    name = 'Hare Config',
+    host = '',
+    enabled_cache = false,
+    clipboard_option = 'unnamedplus',
   },
 }

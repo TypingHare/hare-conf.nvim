@@ -46,6 +46,8 @@ end
 --- @param editor_settings HareConfigEditor
 M.apply_editor_settings = function(editor_settings)
   vim.opt.expandtab = editor_settings.tab.expand_with_spaces
+  vim.opt.number = editor_settings.line_number.show
+  vim.opt.relativenumber = editor_settings.line_number.relative
   vim.opt.softtabstop = editor_settings.tab.width
   vim.opt.tabstop = editor_settings.tab.display_width
   vim.opt.shiftwidth = editor_settings.tab.shift_width
@@ -54,18 +56,54 @@ M.apply_editor_settings = function(editor_settings)
   vim.opt.cursorline = editor_settings.cursor_line_highlight
 end
 
+--- Applies keymap settings.
+--- @param keymap_settings HareConfigKeymap
+M.apply_keymap_settings = function(keymap_settings) end
+
+--- Applies clipboard settings.
+---
+--- @param clipboard_settings HareConfigClipbopard
+M.apply_clipboard_settings = function(clipboard_settings)
+  local host = clipboard_settings.host
+  if host == '' then
+    vim.notify(
+      'Stop setting Hare Config clipboard: clipboard.host is empty.',
+      vim.log.levels.WARN
+    )
+  else
+    local copy_url = 'curl -s X POST ' .. host .. ' -d @-'
+    local paste_url = 'curl -s ' .. host
+    vim.g.clipboard = {
+      name = clipboard_settings.name,
+      copy = { ['+'] = copy_url, ['*'] = copy_url },
+      paste = { ['+'] = paste_url, ['*'] = paste_url },
+      cache_enabled = clipboard_settings.enabled_cache and 1 or 0,
+    }
+
+    vim.opt.clipboard = clipboard_settings.clipboard_option
+  end
+end
+
 --- Applies all settings.
 ---
 --- @param settings HareConfig
 M.apply_all_settings = function(settings)
   M.apply_ui_settings(settings.ui)
   M.apply_editor_settings(settings.editor)
+  M.apply_keymap_settings(settings.keymap)
+  M.apply_clipboard_settings(settings.clipboard)
 end
 
 --- Sets up Hare configuration by applying all settings.
-M.setup = function()
-  M.update_config(M.get_neoconf_config())
+---
+--- @param opts HareConfig
+M.setup = function(opts)
+  local neoconf_config = M.get_neoconf_config()
+  M.update_config(opts)
+  M.update_config(neoconf_config[M.NEOCONF_KEY])
   M.apply_all_settings(M.config)
+
+  require 'hare-config.commands'
 end
 
 return M
