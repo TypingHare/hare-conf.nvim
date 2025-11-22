@@ -1,0 +1,6 @@
+---@class HareConfigClipbopard
+---@field enabled boolean
+---@field name string
+---@field host string
+---@field enabled_cache boolean
+---@field clipboard_option string
