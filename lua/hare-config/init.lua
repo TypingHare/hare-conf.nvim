@@ -119,24 +119,26 @@ end
 ---
 --- @param settings HareConfigClipbopard
 M.apply_clipboard_settings = function(settings)
-  local host = settings.host
-  if host == '' then
-    vim.notify(
-      'Stop setting Hare Config clipboard: clipboard.host is empty.',
-      vim.log.levels.WARN
-    )
-  else
-    local copy_url = 'curl -s X POST ' .. host .. ' -d @-'
-    local paste_url = 'curl -s ' .. host
-    vim.g.clipboard = {
-      name = settings.name,
-      copy = { ['+'] = copy_url, ['*'] = copy_url },
-      paste = { ['+'] = paste_url, ['*'] = paste_url },
-      cache_enabled = settings.enabled_cache and 1 or 0,
-    }
-
-    vim.opt.clipboard = settings.clipboard_option
+  if settings.enabled then
+    local host = settings.host
+    if host == '' then
+      vim.notify(
+        'Stop setting Hare Config clipboard: clipboard.host is empty.',
+        vim.log.levels.WARN
+      )
+    else
+      local copy_url = 'curl -s X POST ' .. host .. ' -d @-'
+      local paste_url = 'curl -s ' .. host
+      vim.g.clipboard = {
+        name = settings.name,
+        copy = { ['+'] = copy_url, ['*'] = copy_url },
+        paste = { ['+'] = paste_url, ['*'] = paste_url },
+        cache_enabled = settings.enabled_cache and 1 or 0,
+      }
+    end
   end
+
+  vim.opt.clipboard = settings.clipboard_option
 end
 
 --- Applies terminal settings.

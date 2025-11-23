@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HareVim Configuration Schema",
+  "type": "object",
+  "properties": {
+    "HareConfig": {
+      "properties": {
+        "appearance": {
+          "type": "object",
+          "properties": {
+            "netrw": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Whether enable Netrw."
+                }
+              }
+            },
+            "color_scheme": {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "description": "Mode",
+                  "enum": ["light", "dark", "system"]
+                },
+                "light_scheme": {
+                  "type": "string",
+                  "description": "Light scheme"
+                },
+                "dark_scheme": {
+                  "type": "string",
+                  "description": "Dark scheme"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
