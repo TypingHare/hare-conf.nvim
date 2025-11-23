@@ -1,4 +1,4 @@
-local M = require 'hare-config'
+local M = require 'hare-conf'
 
 local show_config = function()
   local config_string = vim.inspect(M.config)
@@ -44,7 +44,7 @@ local show_config = function()
   end, opts)
 end
 
-vim.api.nvim_create_user_command('HareConfig', function(opts)
+vim.api.nvim_create_user_command(M.NAME, function(opts)
   if #opts.args > 0 then
     local subcommand = opts.args
     if subcommand == 'show' then

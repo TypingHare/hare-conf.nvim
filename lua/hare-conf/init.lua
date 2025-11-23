@@ -1,10 +1,10 @@
 local M = {}
 
 -- Constants
-M.NEOCONF_KEY = 'HareConfig'
+M.NAME = 'HareConf'
 
 -- Default Hare configuration
-M.default = require 'hare-config.default_config'
+M.default = require 'hare-conf.default'
 
 -- Final Hare configuration
 M.config = M.default
@@ -24,16 +24,18 @@ M.get_neoconf_config = function()
   return user_config
 end
 
----Merges new configuration to the Hare configuration.
+--- Merges new configuration to the Hare configuration.
 ---
----@param new_config table The new configuration to merge.
+--- @param new_config table | nil The new configuration to merge.
 M.update_config = function(new_config)
-  M.config = vim.tbl_deep_extend('force', M.config, new_config)
+  if new_config ~= nil then
+    M.config = vim.tbl_deep_extend('force', M.config, new_config)
+  end
 end
 
 --- Applies appearance settings.
 ---
---- @param settings HareConfigAppearance
+--- @param settings HareConfAppearance
 M.apply_appearance_settings = function(settings)
   if not settings.netrw.enabled then
     vim.g.loaded_netrw = 1
@@ -53,7 +55,7 @@ end
 
 --- Applies editor settings.
 ---
---- @param settings HareConfigEditor
+--- @param settings HareConfEditor
 M.apply_editor_settings = function(settings)
   M.apply_editor_appearance_settings(settings.appearance)
   M.apply_editor_general_settings(settings.general)
@@ -61,7 +63,7 @@ end
 
 --- Applies editor appearance settings.
 ---
---- @param settings HareConfigEditorAppearance
+--- @param settings HareConfEditorAppearance
 M.apply_editor_appearance_settings = function(settings)
   -- line_number
   vim.opt.number = settings.line_number.enabled
@@ -106,7 +108,7 @@ end
 
 --- Applies editor general settings.
 ---
---- @param settings HareConfigEditorGeneral
+--- @param settings HareConfEditorGeneral
 M.apply_editor_general_settings = function(settings)
   -- tab
   vim.opt.expandtab = settings.tab.expand_with_spaces
@@ -117,7 +119,7 @@ end
 
 --- Applies clipboard settings.
 ---
---- @param settings HareConfigClipbopard
+--- @param settings HareConfClipbopard
 M.apply_clipboard_settings = function(settings)
   if settings.enabled then
     local host = settings.host
@@ -143,14 +145,14 @@ end
 
 --- Applies terminal settings.
 ---
---- @param settings HareConfigTerminal
+--- @param settings HareConfTerminal
 M.apply_terminal_settings = function(settings)
   vim.opt.shell = settings.shell
 end
 
 --- Applies all settings.
 ---
---- @param settings HareConfig
+--- @param settings HareConf
 M.apply_all_settings = function(settings)
   M.apply_appearance_settings(settings.appearance)
   M.apply_editor_settings(settings.editor)
@@ -160,15 +162,15 @@ end
 
 --- Sets up Hare configuration by applying all settings.
 ---
---- @param opts HareConfig
+--- @param opts HareConf
 M.setup = function(opts)
   local neoconf_config = M.get_neoconf_config()
   M.update_config(opts)
-  M.update_config(neoconf_config[M.NEOCONF_KEY])
+  M.update_config(neoconf_config[M.NAME])
   M.apply_all_settings(M.config)
 
   -- Load all commands
-  require 'hare-config.commands'
+  require 'hare-conf.commands'
 end
 
 return M

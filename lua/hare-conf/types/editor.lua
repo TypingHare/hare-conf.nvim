@@ -1,0 +1,50 @@
+---@class HareConfEditor
+---@field appearance HareConfEditorAppearance
+---@field general HareConfEditorGeneral
+---@field lang table<string, HareConfEditorLang>
+---
+---@class HareConfEditorAppearance
+---@field line_number HareConfEditorAppearanceLineNumber
+---@field sign_column HareConfEditorAppearanceSignColumn
+---@field cursor HareConfEditorAppearanceCursor
+---@field cursor_insert HareConfEditorAppearanceCursorInsert
+---@field cursor_line HareConfEditorAppearanceColorLine
+---@field fill_chars string
+---
+---@class HareConfEditorAppearanceLineNumber
+---@field enabled boolean
+---@field relative boolean
+---@field highlight? HighlightGroup
+---@field cursor_highlight? HighlightGroup
+---
+---@class HareConfEditorAppearanceSignColumn
+---@field enabled boolean
+---
+---@class HareConfEditorAppearanceCursor
+---@field highlight? HighlightGroup
+---
+---@class HareConfEditorAppearanceCursorInsert
+---@field highlight? HighlightGroup
+---
+---@class HareConfEditorAppearanceColorLine
+---@field enabled boolean
+---@field highlight? HighlightGroup
+---
+---@class HareConfEditorGeneral
+---@field tab HareConfEditorGeneralTab
+---@field color_column HareConfEditorGeneralColorColumn
+---
+---@class HareConfEditorGeneralTab
+---@field expand_with_spaces boolean
+---@field width integer
+---@field display_width integer
+---@field shift_width integer
+---
+---@class HareConfEditorGeneralColorColumn
+---@field enabled boolean
+---@field width boolean
+---@field highlight? HighlightGroup
+---
+---@class HareConfEditorLang
+---@field tab HareConfEditorGeneralTab
+---@field color_column HareConfEditorGeneralColorColumn

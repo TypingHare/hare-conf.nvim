@@ -2,7 +2,7 @@ local M = {}
 
 local health = vim.health
 
---- Checks if a module loads.
+--- Checks if a module has been loaded.
 ---
 --- @param module_name string The module name to check.
 --- @param full_name string The git repository name of the plugin.

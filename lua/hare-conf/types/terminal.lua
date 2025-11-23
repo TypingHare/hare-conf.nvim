@@ -1,0 +1,2 @@
+---@class HareConfTerminal
+---@field shell string

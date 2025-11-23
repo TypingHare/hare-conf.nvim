@@ -1,4 +1,4 @@
----@type HareConfig
+---@type HareConf
 return {
   appearance = {
     netrw = {
@@ -24,20 +24,6 @@ return {
       cursor = {
         highlight = { fg = 'NONE', bg = '#6f9ceb' },
       },
-      color_column = {
-        enabled = true,
-        highlight = nil,
-        disabled_filetypes = {
-          'lazy',
-          'mason',
-          'help',
-          'netrw',
-          'neo-tree',
-          'checkhealth',
-          'lspinfo',
-          'noice',
-        },
-      },
       cursor_insert = {
         highlight = { fg = 'NONE', bg = '#cccccc' },
       },
@@ -54,7 +40,12 @@ return {
         display_width = 4,
         shift_width = 4,
       },
+      color_column = {
+        enabled = true,
+        highlight = nil,
+      },
     },
+    lang = {},
   },
   clipboard = {
     enabled = false,

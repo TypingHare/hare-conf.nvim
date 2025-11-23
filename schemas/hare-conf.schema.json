@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "HareVim Configuration Schema",
+  "title": "HareConf Schema",
   "type": "object",
   "properties": {
     "HareConfig": {

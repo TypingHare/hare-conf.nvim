@@ -1,0 +1,11 @@
+---@class HareConfAppearance
+---@field netrw HareConfAppearanceNetrw
+---@field color_scheme HareConfAppearanceColorScheme
+---
+---@class HareConfAppearanceNetrw
+---@field enabled boolean
+---
+---@class HareConfAppearanceColorScheme
+---@field mode 'dark' | 'light' | 'system'
+---@field light_scheme string
+---@field dark_scheme string
