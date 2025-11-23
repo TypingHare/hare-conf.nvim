@@ -7,19 +7,36 @@ local config = require('hare-conf').config
 ---
 --- TODO: cache
 ---
---- @param buftype string|nil
+--- @param filetype string|nil The filetype to get configuration for.
 --- @return HareConfEditorLang
-M.get_editor_config = function(buftype)
+M.get_lang_config = function(filetype)
   --- @type HareConfEditorLang
-  local editor_lang_config = config.editor.general
+  local lang_config = config.editor.general
 
-  if buftype and config.editor.lang[buftype] then
+  if filetype and config.editor.lang[filetype] then
     --- @type HareConfEditorLang|nil
-    local lang_config = config.editor.lang[buftype]
-    editor_lang_config = vim.tbl_deep_extend('force', M.config, lang_config)
+    local specific_lang_config = config.editor.lang[filetype]
+    if specific_lang_config ~= nil then
+      lang_config =
+        vim.tbl_deep_extend('force', lang_config, specific_lang_config)
+    end
   end
 
-  return editor_lang_config
+  return lang_config
+end
+
+--- Sets editor configuration for a specific language.
+---
+--- @param lang string The language to set configuration for.
+--- @param lang_config HareConfEditorLang The configuration to set.
+M.set_lang_config = function(lang, lang_config)
+  local specific_lang_config = config.editor.lang[lang]
+  if specific_lang_config ~= nil then
+    lang_config =
+      vim.tbl_deep_extend('force', specific_lang_config, lang_config)
+  end
+
+  config.editor.lang[lang] = lang_config
 end
 
 return M

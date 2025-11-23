@@ -1,7 +1,10 @@
 local M = require 'hare-conf'
 
-local show_config = function()
-  local config_string = vim.inspect(M.config)
+--- Displays the current configuration in a popup window.
+---
+--- @param config_string string The configuration string to display.
+--- @param title string The title of the popup window.
+local show_config_string = function(config_string, title)
   local markdown_text = '```lua\n' .. config_string .. '\n```'
   local lines = vim.split(markdown_text, '\n', { plain = true })
 
@@ -15,7 +18,7 @@ local show_config = function()
     border = {
       style = 'rounded',
       text = {
-        top = 'Hare Config',
+        top = title,
         top_align = 'center',
       },
     },
@@ -33,15 +36,31 @@ local show_config = function()
   vim.api.nvim_set_option_value('buftype', 'nofile', { buf = popup.bufnr })
   vim.api.nvim_set_option_value('conceallevel', 2, { win = popup.winid })
 
-  -- close with q or <Esc>
+  -- Close with q or <Esc>
   local opts = { noremap = true, silent = true, buffer = popup.bufnr }
-  vim.keymap.set('n', 'q', function()
+  local quit_callback = function()
     popup:unmount()
-  end, opts)
+  end
 
-  vim.keymap.set('n', '<Esc>', function()
-    popup:unmount()
-  end, opts)
+  vim.keymap.set('n', 'q', quit_callback, opts)
+  vim.keymap.set('n', '<Esc>', quit_callback, opts)
+end
+
+--- Shows the current configuration in a popup window.
+local show_config = function()
+  show_config_string(vim.inspect(M.config), 'Hare Configuration')
+end
+
+--- Shows the language-specific configuration in a popup window.
+---
+--- @param filetype string The filetype to show configuration for.
+local show_lang_config = function(filetype)
+  local lang_config = M.fn.editor.get_lang_config(filetype)
+  show_config_string(
+    vim.inspect(lang_config),
+    filetype and 'Hare Langugage Configuration (' .. filetype .. ')'
+      or 'Hare Language Configuration'
+  )
 end
 
 vim.api.nvim_create_user_command(M.NAME, function(opts)
@@ -49,9 +68,11 @@ vim.api.nvim_create_user_command(M.NAME, function(opts)
     local subcommand = opts.args
     if subcommand == 'show' then
       show_config()
+    elseif subcommand == 'lang' then
+      show_lang_config(vim.bo.filetype)
     end
   end
 end, {
   nargs = '*',
-  desc = 'Hare Config',
+  desc = M.NAME,
 })

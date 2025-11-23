@@ -70,17 +70,33 @@ return {
     general = {
       tab = {
         expand_with_spaces = true,
-        width = 4,
-        display_width = 4,
-        shift_width = 4,
+        width = 2,
+        display_width = 2,
+        shift_width = 2,
       },
       color_column = {
         enabled = true,
         width = 80,
         highlight = nil,
       },
+      format_on_save = true,
+      treesitter = { name = '' },
+      lsp = { enabled = true, name = '' },
+      linter = { enabled = true, name = '' },
+      formatter = { enabled = true, name = '' },
     },
-    lang = {},
+    lang = {
+      python = {
+        tab = {
+          width = 4,
+          display_width = 4,
+          shift_width = 4,
+        },
+        color_column = {
+          width = 88,
+        },
+      },
+    },
   },
   clipboard = {
     enabled = false,

@@ -58,7 +58,7 @@ end
 --- @param settings HareConfEditor
 M.apply_editor_settings = function(settings)
   M.apply_editor_appearance_settings(settings.appearance)
-  M.apply_editor_general_settings(settings.general)
+  M.editor_setup()
 end
 
 --- Applies editor appearance settings.
@@ -106,15 +106,37 @@ M.apply_editor_appearance_settings = function(settings)
   end
 end
 
---- Applies editor general settings.
----
---- @param settings HareConfEditorLang
-M.apply_editor_general_settings = function(settings)
+--- Sets up editor autocommands.
+M.editor_setup = function()
   -- tab
-  vim.opt.expandtab = settings.tab.expand_with_spaces
-  vim.opt.softtabstop = settings.tab.width
-  vim.opt.tabstop = settings.tab.display_width
-  vim.opt.shiftwidth = settings.tab.shift_width
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = '*',
+    callback = function(args)
+      local bufnr = args.buf
+      local bt = vim.bo[bufnr].filetype
+      local lang_config = M.fn.editor.get_lang_config(bt)
+      vim.bo[bufnr].expandtab = lang_config.tab.expand_with_spaces
+      vim.bo[bufnr].softtabstop = lang_config.tab.width
+      vim.bo[bufnr].tabstop = lang_config.tab.display_width
+      vim.bo[bufnr].shiftwidth = lang_config.tab.shift_width
+    end,
+  })
+
+  -- Format on save (with Conform)
+  vim.api.nvim_create_autocmd('BufWritePre', {
+    callback = function(args)
+      local ok, conform = pcall(require, 'conform')
+      if not ok then
+        return
+      end
+
+      local bufnr = args.buf
+      local bt = vim.bo[bufnr].filetype
+      if M.fn.editor.get_lang_config(bt).format_on_save then
+        conform.format { bufnr = bufnr }
+      end
+    end,
+  })
 end
 
 --- Applies clipboard settings.

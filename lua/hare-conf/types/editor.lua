@@ -30,17 +30,37 @@
 ---@field enabled boolean
 ---@field highlight? HighlightGroup
 ---
+---@class HareConfEditorLang
+---@field tab? HareConfEditorLangTab
+---@field color_column? HareConfEditorLangColorColumn
+---@field format_on_save? boolean
+---@field treesitter? HareConfEditorLangTreesitter
+---@field lsp? HareConfEditorLangLsp
+---@field linter? HareConfEditorLangLinter
+---@field formatter? HareConfEditorLangFormatter
+---
 ---@class HareConfEditorLangTab
----@field expand_with_spaces boolean
----@field width integer
----@field display_width integer
----@field shift_width integer
+---@field expand_with_spaces? boolean
+---@field width? integer
+---@field display_width? integer
+---@field shift_width? integer
 ---
 ---@class HareConfEditorLangColorColumn
----@field enabled boolean
----@field width integer
+---@field enabled? boolean
+---@field width? integer
 ---@field highlight? HighlightGroup
 ---
----@class HareConfEditorLang
----@field tab HareConfEditorLangTab
----@field color_column HareConfEditorLangColorColumn
+---@class HareConfEditorLangTreesitter
+---@field name? string
+---
+---@class HareConfEditorLangLsp
+---@field enabled? boolean
+---@field name? string
+---
+---@class HareConfEditorLangLinter
+---@field enabled? boolean
+---@field name? string
+---
+---@class HareConfEditorLangFormatter
+---@field enabled? boolean
+---@field name? string
