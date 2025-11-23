@@ -79,7 +79,7 @@ M.apply_editor_appearance_settings = function(settings)
   vim.opt.signcolumn = settings.sign_column.enabled and 'yes' or 'no'
 
   -- fill_chars
-  -- vim.opt.fillchars:append { eob = settings.fill_chars }
+  vim.opt.fillchars:append { eob = settings.fill_chars }
 
   -- cursor & cursor_insert
   vim.opt.guicursor = {

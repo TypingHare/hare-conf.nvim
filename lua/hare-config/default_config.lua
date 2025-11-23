@@ -45,7 +45,7 @@ return {
         enabled = true,
         highlight = nil,
       },
-      fill_chars = '',
+      fill_chars = ' ',
     },
     general = {
       tab = {
