@@ -108,7 +108,7 @@ end
 
 --- Applies editor general settings.
 ---
---- @param settings HareConfEditorGeneral
+--- @param settings HareConfEditorLang
 M.apply_editor_general_settings = function(settings)
   -- tab
   vim.opt.expandtab = settings.tab.expand_with_spaces
@@ -169,8 +169,11 @@ M.setup = function(opts)
   M.update_config(neoconf_config[M.NAME])
   M.apply_all_settings(M.config)
 
-  -- Load all commands
+  -- Set up all commands
   require 'hare-conf.commands'
+
+  -- Load the fn module
+  M.fn = require 'hare-conf.functions'
 end
 
 return M

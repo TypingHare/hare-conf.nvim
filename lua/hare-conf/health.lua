@@ -34,7 +34,7 @@ function M.check()
   check_plugin('blink.cmp', 'saghen/blink.cmp', true)
 
   health.start 'Optional Dependencies'
-  check_plugin('smartcolumn', 'm4xshen/smartcolumn.nvim', false)
+  -- check_plugin('smartcolumn', 'm4xshen/smartcolumn.nvim', false)
 end
 
 return M

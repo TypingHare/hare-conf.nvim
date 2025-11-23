@@ -1,6 +1,6 @@
 ---@class HareConfEditor
 ---@field appearance HareConfEditorAppearance
----@field general HareConfEditorGeneral
+---@field general HareConfEditorLang
 ---@field lang table<string, HareConfEditorLang>
 ---
 ---@class HareConfEditorAppearance
@@ -30,21 +30,17 @@
 ---@field enabled boolean
 ---@field highlight? HighlightGroup
 ---
----@class HareConfEditorGeneral
----@field tab HareConfEditorGeneralTab
----@field color_column HareConfEditorGeneralColorColumn
----
----@class HareConfEditorGeneralTab
+---@class HareConfEditorLangTab
 ---@field expand_with_spaces boolean
 ---@field width integer
 ---@field display_width integer
 ---@field shift_width integer
 ---
----@class HareConfEditorGeneralColorColumn
+---@class HareConfEditorLangColorColumn
 ---@field enabled boolean
----@field width boolean
+---@field width integer
 ---@field highlight? HighlightGroup
 ---
 ---@class HareConfEditorLang
----@field tab HareConfEditorGeneralTab
----@field color_column HareConfEditorGeneralColorColumn
+---@field tab HareConfEditorLangTab
+---@field color_column HareConfEditorLangColorColumn

@@ -1,0 +1,9 @@
+---@class HareConfSystem
+---@field buffer HareConfSystemBuffer
+---@field file HareConfSystemFile
+---
+---@class HareConfSystemBuffer
+---@field exclude_types string[]
+---
+---@class HareConfSystemFile
+---@field exclude_types string[]

@@ -1,5 +1,39 @@
 ---@type HareConf
 return {
+  system = {
+    buffer = {
+      exclude_types = {
+        'nofile', -- help, quickfix, explorer UIs, etc.
+        'terminal', -- terminal buffers
+        'prompt', -- Telescope prompt
+        'quickfix', -- quickfix/location list
+        'help', -- :help buffers (yes, help is buftype)
+      },
+    },
+    file = {
+      exclude_types = {
+        -- UI panels
+        'neo-tree',
+        'NvimTree',
+        'lazy',
+        'mason',
+        'noice',
+        'trouble',
+        'dashboard',
+        'alpha',
+        'spectre_panel',
+
+        -- Fuzzy finders / pickers
+        'TelescopePrompt',
+        'TelescopeResults',
+
+        -- Terminals
+        'toggleterm',
+        'term',
+        'terminal',
+      },
+    },
+  },
   appearance = {
     netrw = {
       enabled = false,
@@ -42,6 +76,7 @@ return {
       },
       color_column = {
         enabled = true,
+        width = 80,
         highlight = nil,
       },
     },
