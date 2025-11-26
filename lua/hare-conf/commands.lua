@@ -5,11 +5,19 @@ local M = require 'hare-conf'
 --- @param config_string string The configuration string to display.
 --- @param title string The title of the popup window.
 local show_config_string = function(config_string, title)
+  local ok, Popup = pcall(require, 'nui.popup')
+  if not ok then
+    vim.notify(
+      'hare-conf: nui.nvim is not installed (required for popup)',
+      vim.log.levels.WARN
+    )
+    return
+  end
+
   local markdown_text = '```lua\n' .. config_string .. '\n```'
   local lines = vim.split(markdown_text, '\n', { plain = true })
 
   -- create popup
-  local Popup = require 'nui.popup'
   local popup = Popup {
     enter = true,
     focusable = true,

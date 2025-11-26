@@ -1,4 +1,4 @@
----@class HareConfClipbopard
+---@class HareConfClipboard
 ---@field enabled boolean
 ---@field name string
 ---@field host string

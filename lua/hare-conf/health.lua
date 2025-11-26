@@ -26,15 +26,22 @@ local function check_plugin(module_name, full_name, optional)
 end
 
 function M.check()
+  -- The plugins that HareConf depends on
   health.start 'Required Dependencies'
+  check_plugin('nui', 'MunifTanjim/nui.nvim', true)
   check_plugin('neoconf', 'folke/neoconf.nvim', true)
   check_plugin('mason', 'williamboman/mason.nvim', true)
   check_plugin('mason-lspconfig', 'williamboman/mason-lspconfig.nvim', true)
-  check_plugin('bufferline', 'akinsho/bufferline.nvim', true)
-  check_plugin('blink.cmp', 'saghen/blink.cmp', true)
+  check_plugin(
+    'mason-tool-installer',
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    true
+  )
 
+  -- The plugins that HareConf can support
   health.start 'Optional Dependencies'
-  -- check_plugin('smartcolumn', 'm4xshen/smartcolumn.nvim', false)
+  check_plugin('smartcolumn', 'm4xshen/smartcolumn.nvim', false)
+  check_plugin('blink.cmp', 'saghen/blink.cmp', true)
 end
 
 return M

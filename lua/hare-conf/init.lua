@@ -58,6 +58,8 @@ end
 --- @param settings HareConfEditor
 M.apply_editor_settings = function(settings)
   M.apply_editor_appearance_settings(settings.appearance)
+
+  M.fn.editor.clear_cache()
   M.editor_setup()
 end
 
@@ -113,12 +115,16 @@ M.editor_setup = function()
     pattern = '*',
     callback = function(args)
       local bufnr = args.buf
-      local bt = vim.bo[bufnr].filetype
-      local lang_config = M.fn.editor.get_lang_config(bt)
+      local ft = vim.bo[bufnr].filetype
+      local lang_config = M.fn.editor.get_lang_config(ft)
       vim.bo[bufnr].expandtab = lang_config.tab.expand_with_spaces
-      vim.bo[bufnr].softtabstop = lang_config.tab.width
-      vim.bo[bufnr].tabstop = lang_config.tab.display_width
-      vim.bo[bufnr].shiftwidth = lang_config.tab.shift_width
+
+      local width = lang_config.tab.width or 80
+      local display_width = lang_config.tab.display_width or width
+      local shift_width = lang_config.tab.shift_width or width
+      vim.bo[bufnr].softtabstop = width
+      vim.bo[bufnr].tabstop = display_width
+      vim.bo[bufnr].shiftwidth = shift_width
     end,
   })
 
@@ -141,7 +147,7 @@ end
 
 --- Applies clipboard settings.
 ---
---- @param settings HareConfClipbopard
+--- @param settings HareConfClipboard
 M.apply_clipboard_settings = function(settings)
   if settings.enabled then
     local host = settings.host
@@ -151,12 +157,14 @@ M.apply_clipboard_settings = function(settings)
         vim.log.levels.WARN
       )
     else
-      local copy_url = 'curl -s X POST ' .. host .. ' -d @-'
-      local paste_url = 'curl -s ' .. host
+      local copy_cmd =
+        string.format('curl -s -X POST %s -d @-', vim.fn.shellescape(host))
+      local paste_cmd = string.format('curl -s %s', vim.fn.shellescape(host))
+
       vim.g.clipboard = {
         name = settings.name,
-        copy = { ['+'] = copy_url, ['*'] = copy_url },
-        paste = { ['+'] = paste_url, ['*'] = paste_url },
+        copy = { ['+'] = copy_cmd, ['*'] = copy_cmd },
+        paste = { ['+'] = paste_cmd, ['*'] = paste_cmd },
         cache_enabled = settings.enabled_cache and 1 or 0,
       }
     end
@@ -184,18 +192,26 @@ end
 
 --- Sets up Hare configuration by applying all settings.
 ---
---- @param opts HareConf
+--- @param opts HareConf|nil
 M.setup = function(opts)
+  -- Update the configuration with opts
+  if opts then
+    M.update_config(opts)
+  end
+
+  -- HareConf allows user to set the config using Neoconf by merging the
+  -- Neoconf config to the Hare configuration
   local neoconf_config = M.get_neoconf_config()
-  M.update_config(opts)
   M.update_config(neoconf_config[M.NAME])
-  M.apply_all_settings(M.config)
 
   -- Set up all commands
   require 'hare-conf.commands'
 
   -- Load the fn module
   M.fn = require 'hare-conf.functions'
+
+  -- Apply all settings with the Hare configuration
+  M.apply_all_settings(M.config)
 end
 
 return M

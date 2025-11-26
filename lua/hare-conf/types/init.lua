@@ -4,5 +4,5 @@
 ---@field system HareConfSystem
 ---@field appearance HareConfAppearance
 ---@field editor HareConfEditor
----@field clipboard HareConfClipbopard
+---@field clipboard HareConfClipboard
 ---@field terminal HareConfTerminal

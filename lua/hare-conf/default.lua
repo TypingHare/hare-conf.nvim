@@ -71,8 +71,8 @@ return {
       tab = {
         expand_with_spaces = true,
         width = 2,
-        display_width = 2,
-        shift_width = 2,
+        display_width = nil,
+        shift_width = nil,
       },
       color_column = {
         enabled = true,
@@ -80,23 +80,12 @@ return {
         highlight = nil,
       },
       format_on_save = true,
-      treesitter = { name = '' },
-      lsp = { enabled = true, name = '' },
-      linter = { enabled = true, name = '' },
-      formatter = { enabled = true, name = '' },
+      treesitter = { name = nil },
+      lsp = { enabled = true, name = nil },
+      linter = { enabled = true, name = nil },
+      formatter = { enabled = true, name = nil },
     },
-    lang = {
-      python = {
-        tab = {
-          width = 4,
-          display_width = 4,
-          shift_width = 4,
-        },
-        color_column = {
-          width = 88,
-        },
-      },
-    },
+    lang = {},
   },
   clipboard = {
     enabled = false,
