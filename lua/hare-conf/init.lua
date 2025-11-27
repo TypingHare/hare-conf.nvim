@@ -43,14 +43,22 @@ M.apply_appearance_settings = function(settings)
   end
 
   local color_scheme_mode = settings.color_scheme.mode
-  if color_scheme_mode == 'dark' then
+  if color_scheme_mode == 'dark' or color_scheme_mode == 'system' then
     vim.cmd.colorscheme(settings.color_scheme.dark_scheme)
   elseif color_scheme_mode == 'light' then
     vim.cmd.colorscheme(settings.color_scheme.light_scheme)
-  elseif color_scheme_mode == 'system' then
-    -- TODO: How to implement?
-    vim.cmd.colorscheme(settings.color_scheme.light_scheme)
   end
+
+  vim.api.nvim_create_autocmd('OptionSet', {
+    pattern = 'background',
+    callback = function()
+      if vim.o.background == 'dark' then
+        vim.cmd.colorscheme(settings.color_scheme.dark_scheme)
+      else
+        vim.cmd.colorscheme(settings.color_scheme.light_scheme)
+      end
+    end,
+  })
 end
 
 --- Applies editor settings.
@@ -58,6 +66,16 @@ end
 --- @param settings HareConfEditor
 M.apply_editor_settings = function(settings)
   M.apply_editor_appearance_settings(settings.appearance)
+
+  -- Diagnostic
+  vim.diagnostic.config {
+    virtual_text = settings.diagnostic.virtual_text,
+    virtual_lines = settings.diagnostic.virtual_lines,
+    update_in_insert = settings.diagnostic.update_in_insert,
+    underline = settings.diagnostic.underline,
+    signs = settings.diagnostic.signs,
+    severity_sort = settings.diagnostic.severity_sort,
+  }
 
   M.fn.editor.clear_cache()
   M.editor_setup()

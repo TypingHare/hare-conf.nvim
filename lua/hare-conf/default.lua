@@ -86,6 +86,14 @@ return {
       formatter = { enabled = true, name = nil },
     },
     lang = {},
+    diagnostic = {
+      virtual_text = true,
+      virtual_lines = false,
+      update_in_insert = true,
+      underline = true,
+      signs = true,
+      severity_sort = true,
+    },
   },
   clipboard = {
     enabled = false,

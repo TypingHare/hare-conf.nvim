@@ -2,6 +2,7 @@
 ---@field appearance HareConfEditorAppearance
 ---@field general HareConfEditorLang
 ---@field lang table<string, HareConfEditorLang>
+---@field diagnostic HareConfEditorDiagnostic
 ---
 ---@class HareConfEditorAppearance
 ---@field line_number HareConfEditorAppearanceLineNumber
@@ -64,3 +65,11 @@
 ---@class HareConfEditorLangFormatter
 ---@field enabled? boolean
 ---@field name? string
+---
+---@class HareConfEditorDiagnostic
+---@field virtual_text boolean
+---@field virtual_lines boolean
+---@field update_in_insert boolean
+---@field underline boolean
+---@field signs boolean
+---@field severity_sort boolean
