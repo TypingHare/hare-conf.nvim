@@ -48,17 +48,6 @@ M.apply_appearance_settings = function(settings)
   elseif color_scheme_mode == 'light' then
     vim.cmd.colorscheme(settings.color_scheme.light_scheme)
   end
-
-  -- vim.api.nvim_create_autocmd('OptionSet', {
-  --   pattern = 'background',
-  --   callback = function()
-  --     if vim.o.background == 'dark' then
-  --       vim.cmd.colorscheme(settings.color_scheme.dark_scheme)
-  --     else
-  --       vim.cmd.colorscheme(settings.color_scheme.light_scheme)
-  --     end
-  --   end,
-  -- })
 end
 
 --- Applies editor settings.
