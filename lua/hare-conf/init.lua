@@ -208,6 +208,10 @@ M.apply_all_settings = function(settings)
   M.apply_terminal_settings(settings.terminal)
 end
 
+M.apply = function()
+  M.apply_all_settings(M.config)
+end
+
 --- Sets up Hare configuration by applying all settings.
 ---
 --- @param opts HareConf|nil
@@ -227,9 +231,6 @@ M.setup = function(opts)
 
   -- Load the fn module
   M.fn = require 'hare-conf.functions'
-
-  -- Apply all settings with the Hare configuration
-  M.apply_all_settings(M.config)
 end
 
 return M
