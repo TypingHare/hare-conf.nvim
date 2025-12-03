@@ -16,30 +16,31 @@ const INPUT_CLASS_SUFFIX = 'Input'
  * Converts a JavaScript type to a Lua type annotation.
  *
  * @param {Type} type The JavaScript type.
+ * @param {boolean} [isInput=false] Whether the type is for user input types.
  * @returns {string} The corresponding Lua type annotation.
  */
-function toLuaType(type) {
+function toLuaType(type, isInput = false) {
     if (typeof type === 'string') {
         if (PRIMITIVE_TYPE_SET.has(type)) {
             return type
         } else if (type.startsWith('class:')) {
-            return type.slice(6)
+            return type.slice(6) + (isInput ? INPUT_CLASS_SUFFIX : '')
         } else {
             return `'${type}'`
         }
     } else if (type instanceof List) {
-        const elementType = toLuaType(type.elementType)
+        const elementType = toLuaType(type.elementType, isInput)
         return `${elementType}[]`
     } else if (type instanceof Fn) {
-        const paramTypes = type.paramTypes.map(toLuaType).join(', ')
-        const returnType = toLuaType(type.returnTypes)
+        const paramTypes = type.paramTypes.map((t) => toLuaType(t, isInput)).join(', ')
+        const returnType = toLuaType(type.returnTypes, isInput)
         return `fun(${paramTypes}): ${returnType}`
     } else if (type instanceof Union) {
-        const luaTypes = type.types.map(toLuaType)
+        const luaTypes = type.types.map((t) => toLuaType(t, isInput))
         return luaTypes.join(' | ')
     } else if (type instanceof Table) {
-        const keyType = toLuaType(type.keyType)
-        const valueType = toLuaType(type.valueType)
+        const keyType = toLuaType(type.keyType, isInput)
+        const valueType = toLuaType(type.valueType, isInput)
         return `table<${keyType}, ${valueType}>`
     }
 }
@@ -47,13 +48,14 @@ function toLuaType(type) {
 function createLuaField(name, luaType, description, nullable) {
     const desc = description ? `  # ${description}` : ''
     const qm = nullable ? '?' : ''
+
     return `---@field ${name}${qm} ${luaType}${desc}`.trim()
 }
 
 /**
  * @param {string} className The name of the Lua class.
  * @param {Object.<string, Entry>} entryMap The map of entries to include in the class.
- * @param {boolean} [isInput=false] Whether the class is for input (true) or output (false).
+ * @param {boolean} [isInput=false] Whether the type is for user input types.
  * @returns {string[]} The lines of the Lua class definition.
  */
 function createLuaClass(className, entryMap, isInput = false) {
@@ -69,19 +71,22 @@ function createLuaClass(className, entryMap, isInput = false) {
     for (const [name, entry] of Object.entries(entryMap)) {
         if (entry instanceof Entry) {
             const { type, description, nullable } = entry
-            const luaType = toLuaType(type)
+            const luaType = toLuaType(type, isInput)
             lines.push(createLuaField(name, luaType, description, isInput || nullable))
         } else if (typeof entry === 'object') {
-            const childClassName = isInput ? entry.$lua_name + INPUT_CLASS_SUFFIX : entry.$lua_name
+            const childClassName = entry.$lua_name
             const childEntryMap = { ...entry }
             const moreLines = createLuaClass(childClassName, childEntryMap, isInput)
             const description = entry.$description || ''
             const nullable = Boolean(entry.$nullable)
+            const realChildClassName = isInput
+                ? childClassName + INPUT_CLASS_SUFFIX
+                : childClassName
             lines = [
                 ...moreLines,
                 '',
                 ...lines,
-                createLuaField(name, childClassName, description, isInput || nullable),
+                createLuaField(name, realChildClassName, description, isInput || nullable),
             ]
         }
     }
