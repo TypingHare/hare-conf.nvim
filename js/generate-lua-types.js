@@ -1,4 +1,5 @@
 const targetLuaFile = process.argv[2]
+const isInput = process.argv[3] == '--input' || false
 
 if (!targetLuaFile) {
     console.log('Please provide a target Lua file path as an argument.')
@@ -6,9 +7,10 @@ if (!targetLuaFile) {
 }
 
 import { hareConfDefinitions } from './hare-conf-definitions.js'
-import { T, Entry, List, Fn, Union } from './hare-conf-types.js'
+import { T, Entry, List, Table, Fn, Union } from './hare-conf-types.js'
 
 const PRIMITIVE_TYPE_SET = new Set(Object.values(T))
+const INPUT_CLASS_SUFFIX = 'Input'
 
 /**
  * Converts a JavaScript type to a Lua type annotation.
@@ -35,6 +37,10 @@ function toLuaType(type) {
     } else if (type instanceof Union) {
         const luaTypes = type.types.map(toLuaType)
         return luaTypes.join(' | ')
+    } else if (type instanceof Table) {
+        const keyType = toLuaType(type.keyType)
+        const valueType = toLuaType(type.valueType)
+        return `table<${keyType}, ${valueType}>`
     }
 }
 
@@ -47,11 +53,16 @@ function createLuaField(name, luaType, description, nullable) {
 /**
  * @param {string} className The name of the Lua class.
  * @param {Object.<string, Entry>} entryMap The map of entries to include in the class.
+ * @param {boolean} [isInput=false] Whether the class is for input (true) or output (false).
  * @returns {string[]} The lines of the Lua class definition.
  */
-function createLuaClass(className, entryMap) {
+function createLuaClass(className, entryMap, isInput = false) {
     if (!className) {
         return []
+    }
+
+    if (isInput) {
+        className += INPUT_CLASS_SUFFIX
     }
 
     let lines = [`---@class ${className}`]
@@ -59,18 +70,18 @@ function createLuaClass(className, entryMap) {
         if (entry instanceof Entry) {
             const { type, description, nullable } = entry
             const luaType = toLuaType(type)
-            lines.push(createLuaField(name, luaType, description, nullable))
+            lines.push(createLuaField(name, luaType, description, isInput || nullable))
         } else if (typeof entry === 'object') {
-            const childClassName = entry.$lua_name
+            const childClassName = isInput ? entry.$lua_name + INPUT_CLASS_SUFFIX : entry.$lua_name
             const childEntryMap = { ...entry }
-            const moreLines = createLuaClass(childClassName, childEntryMap)
+            const moreLines = createLuaClass(childClassName, childEntryMap, isInput)
             const description = entry.$description || ''
             const nullable = Boolean(entry.$nullable)
             lines = [
                 ...moreLines,
                 '',
                 ...lines,
-                createLuaField(name, childClassName, description, nullable),
+                createLuaField(name, childClassName, description, isInput || nullable),
             ]
         }
     }
@@ -78,5 +89,5 @@ function createLuaClass(className, entryMap) {
     return lines
 }
 
-const luaFileContent = createLuaClass('HareConf', hareConfDefinitions).join('\n')
+const luaFileContent = createLuaClass('HareConf', hareConfDefinitions, isInput).join('\n')
 console.log(luaFileContent)

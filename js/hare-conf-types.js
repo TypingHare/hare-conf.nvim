@@ -7,7 +7,7 @@ export const T = Object.freeze({
     NUMBER: 'number',
     INT: 'integer',
     BOOL: 'boolean',
-    TABLE: 'table',
+    ANY: 'any',
 })
 
 /**
@@ -18,6 +18,18 @@ export const T = Object.freeze({
  */
 export class List {
     elementType = T.NIL
+}
+
+/**
+ * Table type (dictionary-like table in Lua) representation.
+ *
+ * @class
+ * @property {Type} keyType - The type of the table keys.
+ * @property {Type} valueType - The type of the table values.
+ */
+export class Table {
+    keyType = T.STR
+    valueType = T.ANY
 }
 
 /**
@@ -75,6 +87,21 @@ export function list(elementType = T.NIL) {
 }
 
 /**
+ * Factory function to create a new table type.
+ *
+ * @param {Type} [valueType=T.ANY] - The type of the table values.
+ * @param {Type} [keyType=T.STR] - The type of the table keys.
+ * @returns {Table} A new table type instance.
+ */
+export function table(valueType = T.ANY, keyType = T.STR) {
+    const table = new Table()
+    table.keyType = keyType
+    table.valueType = valueType
+
+    return table
+}
+
+/**
  * Factory function to create a new function type.
  *
  * @param {Type} [returnType=T.NIL] - The return type of the function.
@@ -102,13 +129,17 @@ export function union(...types) {
     return union
 }
 
+export function classRef(className) {
+    return `class:${className}`
+}
+
 /**
  * Factory function to create a new configuration entry.
  *
  * @param {Type} type - The type of the configuration entry.
- * @param {string} [description=''] - The description of the configuration entry.
- * @param {*} [defaultValue=null] - The default value of the configuration entry.
- * @param {boolean} [nullable=true] - Whether the configuration entry can be null.
+ * @param {string} description - The description of the configuration entry.
+ * @param {*} defaultValue - The default value of the configuration entry.
+ * @param {boolean} [nullable=false] - Whether the configuration entry can be null.
  * @returns {Entry} A new configuration entry instance.
  */
 export function entry(type, description, defaultValue, nullable = false) {
