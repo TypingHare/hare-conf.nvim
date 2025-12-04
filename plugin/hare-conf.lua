@@ -1,0 +1,7 @@
+-- plugin/hare-conf.lua
+-- This file intentionally left blank.
+--
+-- hare-conf only operates after the user calls:
+--   require('hare-conf').setup {}
+--
+-- Keeping this file empty avoids configuring things before the user is ready.
