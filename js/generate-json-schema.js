@@ -77,7 +77,7 @@ function generateJsonSchemaFromEntry(entry) {
  * Generates a JSON schema from the provided entry map.
  *
  * @param {string} className - The name of the class for which the schema is being generated.
- * @param {Object<string, Entry>} entryMap - The map of entries to generate the schema from.
+ * @param {EntryMap} entryMap - The map of entries to generate the schema from.
  * @returns {Object} - The generated JSON schema.
  */
 function generateJsonSchema(className, entryMap) {

@@ -58,7 +58,7 @@ function createLuaField(name, luaType, description, nullable) {
 
 /**
  * @param {string} className The name of the Lua class.
- * @param {Object.<string, Entry>} entryMap The map of entries to include in the class.
+ * @param {EntryMap} entryMap The map of entries to include in the class.
  * @param {boolean} [isInput=false] Whether the type is for user input types.
  * @returns {string[]} The lines of the Lua class definition.
  */

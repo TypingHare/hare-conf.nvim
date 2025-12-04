@@ -165,3 +165,13 @@ export function entry(type, description, defaultValue, nullable = false) {
 
     return entry
 }
+
+/**
+ * A recursive map of configuration entries.
+ *
+ * Keys are Lua table keys; values are either:
+ * - an {@link Entry} instance (leaf node), or
+ * - another EntryMap (nested table).
+ *
+ * @typedef {Object<string, Entry | EntryMap>} EntryMap
+ */
