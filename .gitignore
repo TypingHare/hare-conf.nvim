@@ -4,5 +4,6 @@
 # JSON schema files
 schemas/
 
-# Lua type definitions
+# Lua type definitions and default configurations
 lua/hare-conf/types.lua
+lua/hare-conf/defaults.lua
