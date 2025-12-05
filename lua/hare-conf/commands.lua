@@ -68,12 +68,17 @@ end
 
 --- Displays the buffer configuration for the given filetype in a popup window.
 ---
+--- If no filetype is provided, the default buffer configuration is displayed.
+---
 --- @param filetype string The filetype associated with the buffer.
 local display_buffer_config = function(filetype)
-    local buffer_config = M.fn.get_buffer_config(filetype)
+    local filetype_specified = filetype and filetype ~= ''
+    local buffer_config = filetype_specified and M.fn.get_buffer_config(filetype)
+        or M.config.editor.buffer
+
     display_lua_code(
         vim.inspect(buffer_config),
-        filetype and 'Hare Configuration for Buffer (' .. filetype .. ')'
+        filetype_specified and 'Hare Configuration for Buffer (' .. filetype .. ')'
             or 'Hare Configuration for Buffer'
     )
 end
