@@ -5,7 +5,7 @@ const CLASS_HIGHLIGHT_GROUP = classRef('vim.api.keyset.highlight', true)
 const system = {
     $class_name: 'HareConfSystem',
     $description: 'System-wide configurations.',
-    buffer: {
+    buftype: {
         $class_name: 'HareConfSystemBuffer',
         $description: 'The configurations for system-wide buffer.',
         exclude: entry(list(T.STR), 'Buffer types to be excluded in many scenarios.', []),
