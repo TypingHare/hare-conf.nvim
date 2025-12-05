@@ -100,8 +100,12 @@ const editor = {
             $description: 'The indentation configurations for the editor buffer.',
             type: entry(union('spaces', 'tabs'), 'The type of indentation to use.', 'spaces'),
             width: entry(T.INT, 'The number of spaces per tab.', 4),
-            display_width: entry(T.INT, 'The number of spaces to display for a tab character.', 4),
-            shift_width: entry(T.INT, 'The number of spaces to use for each step of indent.', 4),
+            display_width: entry(
+                T.INT,
+                'The number of spaces to display for a tab character.',
+                null
+            ),
+            shift_width: entry(T.INT, 'The number of spaces to use for each step of indent.', null),
         },
         ruler: {
             $class_name: 'HareConfEditorBufferRuler',
@@ -117,7 +121,7 @@ const editor = {
             name: entry(T.STR, 'The default Tree-sitter parser to use.', null),
         },
         lsp: {
-            $class_name: 'HareConfEditorBufferLSP',
+            $class_name: 'HareConfEditorBufferLsp',
             $description: 'The LSP configurations for the editor buffer.',
             enabled: entry(T.BOOL, 'Whether to enable LSP.', true),
             name: entry(T.STR, 'The default LSP to use.', null),
@@ -140,17 +144,19 @@ const editor = {
             enabled: entry(T.BOOL, 'Whether to enable the debugger.', true),
             name: entry(T.STR, 'The default debugger to use.', null),
         },
-        format_on_save: entry(
-            T.BOOL,
-            'Whether to format the buffer automatically on save.',
-            true
-        )
+        format_on_save: entry(T.BOOL, 'Whether to format the buffer automatically on save.', true),
     },
     filetype: entry(
         table(union(T.STR, classRef('HareConfEditorBuffer'))),
         'The editor buffer configurations for specific filetypes.',
         {}
     ),
+}
+
+const language = {
+    $class_name: 'HareConfLanguage',
+    $description: 'Language-specific configurations.',
+    names: entry(list(T.STR), 'A list of strings specific to the language.', ['lua']),
 }
 
 const clipboard = {
@@ -174,6 +180,7 @@ export const hareConfDefinitions = {
     system,
     appearance,
     editor,
+    language,
     clipboard,
     terminal,
 }
