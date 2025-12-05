@@ -1,7 +1,5 @@
-import { T, List, Table, Fn, Union, Entry } from './hare-conf-types.js'
+import { T, List, Table, Fn, Union, Entry, ClassRef } from './hare-conf-types.js'
 import { hareConfDefinitions } from './hare-conf-definitions.js'
-
-const TYPE_STRING_CLASS_PREFIX = 'class:'
 
 /**
  * Converts a Hare configuration type to a JSON schema type.
@@ -26,16 +24,8 @@ function toJsonSchemaType(type) {
                 return {}
         }
 
-        if (type.startsWith(TYPE_STRING_CLASS_PREFIX)) {
-            // Reference to another schema definition
-            const className = type.slice(TYPE_STRING_CLASS_PREFIX.length)
-            return { $ref: `#${className}` }
-        }
-
         // Enumeration of string literals
-        return {
-            const: type,
-        }
+        return { const: type }
     } else if (type instanceof List) {
         return {
             type: 'array',
@@ -56,6 +46,10 @@ function toJsonSchemaType(type) {
         return {
             type: 'object',
             additionalProperties: toJsonSchemaType(type.valueType),
+        }
+    } else if (type instanceof ClassRef) {
+        return {
+            $ref: `#${type.className}`,
         }
     }
 }

@@ -1,9 +1,8 @@
 import { hareConfDefinitions } from './hare-conf-definitions.js'
-import { T, Entry, List, Table, Fn, Union } from './hare-conf-types.js'
+import { T, Entry, List, Table, Fn, Union, ClassRef } from './hare-conf-types.js'
 
 const PRIMITIVE_TYPE_SET = new Set(Object.values(T))
 const INPUT_CLASS_SUFFIX = 'Input'
-const TYPE_STRING_CLASS_PREFIX = 'class:'
 
 const isInput = process.argv[2] == '--input' || false
 
@@ -16,13 +15,7 @@ const isInput = process.argv[2] == '--input' || false
  */
 function toLuaType(type, isInput = false) {
     if (typeof type === 'string') {
-        if (PRIMITIVE_TYPE_SET.has(type)) {
-            return type
-        } else if (type.startsWith(TYPE_STRING_CLASS_PREFIX)) {
-            return type.slice(TYPE_STRING_CLASS_PREFIX.length) + (isInput ? INPUT_CLASS_SUFFIX : '')
-        } else {
-            return `'${type}'`
-        }
+        return PRIMITIVE_TYPE_SET.has(type) ? type : `'${type}'`
     } else if (type instanceof List) {
         const elementType = toLuaType(type.elementType, isInput)
         return `${elementType}[]`
@@ -37,6 +30,9 @@ function toLuaType(type, isInput = false) {
         const keyType = toLuaType(type.keyType, isInput)
         const valueType = toLuaType(type.valueType, isInput)
         return `table<${keyType}, ${valueType}>`
+    } else if (type instanceof ClassRef) {
+        const { className, isBuiltin } = type
+        return isBuiltin ? className : className + (isInput ? INPUT_CLASS_SUFFIX : '')
     }
 }
 

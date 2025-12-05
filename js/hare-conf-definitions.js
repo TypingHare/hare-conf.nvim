@@ -1,6 +1,6 @@
 import { entry, union, T, list, table, classRef } from './hare-conf-types.js'
 
-const CLASS_HIGHLIGHT_GROUP = classRef('vim.api.keyset.highlight')
+const CLASS_HIGHLIGHT_GROUP = classRef('vim.api.keyset.highlight', true)
 
 const system = {
     $class_name: 'HareConfSystem',

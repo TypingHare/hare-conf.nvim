@@ -55,6 +55,18 @@ export class Union {
 }
 
 /**
+ * Class reference representation.
+ *
+ * @class
+ * @property {string} className - The name of the referenced class.
+ * @property {boolean} builtin - Whether the class is a built-in class in Lua.
+ */
+export class ClassRef {
+    className = ''
+    isBuiltin = false
+}
+
+/**
  * @typedef {T | Fn | Union} Type
  */
 
@@ -129,8 +141,12 @@ export function union(...types) {
     return union
 }
 
-export function classRef(className) {
-    return `class:${className}`
+export function classRef(className, builtin = false) {
+    const classRef = new ClassRef()
+    classRef.className = className
+    classRef.isBuiltin = builtin
+
+    return classRef
 }
 
 /**
