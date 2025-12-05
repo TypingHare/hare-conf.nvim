@@ -111,7 +111,7 @@ const editor = {
             $class_name: 'HareConfEditorBufferRuler',
             $description: 'The ruler configurations for the editor buffer.',
             enabled: entry(T.BOOL, 'Whether to enable the ruler.', true),
-            columns: entry(list(T.INT), 'The columns at which to show the ruler.', [80, 100]),
+            columns: entry(list(T.INT), 'The columns at which to show the ruler.', [100]),
             highlight: entry(CLASS_HIGHLIGHT_GROUP, 'The highlight group for the ruler.', null),
         },
         treesitter: {
