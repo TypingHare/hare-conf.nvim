@@ -116,7 +116,9 @@ const jsonSchema = {
     },
     title: 'HareConf Schema',
     type: 'object',
-    ...hareConfSchema,
+    properties: {
+        HareConf: hareConfSchema,
+    },
 }
 
 console.log(JSON.stringify(jsonSchema, null, 2))
