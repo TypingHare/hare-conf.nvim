@@ -1,0 +1,14 @@
+singleQuote = true
+trailingComma = "es5"
+semi = false
+printWidth = 100
+useTabs = false
+tabWidth = 4
+proseWrap = "preserve"
+endOfLine = "lf"
+bracketSpacing = true
+
+[[overrides]]
+files = ["*.json"]
+[overrides.options]
+tabWidth = 2
