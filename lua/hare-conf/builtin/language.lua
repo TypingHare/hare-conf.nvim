@@ -13,7 +13,7 @@ M.config = {
             treesitter = { name = 'lua' },
             lsp = { name = 'lua_ls' },
             formatter = { name = 'stylua' },
-            ruler = { width = 100 },
+            ruler = { columns = { 100 } },
         },
     },
     json = {
@@ -42,6 +42,7 @@ M.config = {
             formatter = { name = 'prettier' },
             linter = { name = 'eslint-lsp' },
             indent = { width = 2 },
+            ruler = { columns = { 100 } },
         },
     },
     bash = {
@@ -51,10 +52,11 @@ M.config = {
             lsp = { name = 'bashls' },
             linter = { name = 'shellcheck' },
             formatter = { name = 'shfmt' },
+            ruler = { columns = { 80 } },
         },
     },
     latex = {
-        filetypes = { 'bib' },
+        filetypes = { 'tex', 'bib' },
         buffer_config = {
             treesitter = { name = 'bibtex' },
             lsp = { name = 'texlab' },
@@ -68,6 +70,7 @@ M.config = {
             treesitter = { name = 'cmake' },
             formatter = { name = 'cmakelint' },
             lsp = { name = 'cmake' },
+            ruler = { columns = { 80 } },
         },
     },
     cpp = {
@@ -76,6 +79,7 @@ M.config = {
             treesitter = { name = 'cpp' },
             formatter = { name = 'clang-format' },
             lsp = { name = 'clangd' },
+            ruler = { columns = { 80 } },
         },
     },
     css = {
@@ -120,6 +124,7 @@ M.config = {
             linter = { name = 'checkmake' },
             --formatter = { name = 'mbake' },
             indent = { type = 'tabs', display_width = 4 },
+            ruler = { columns = { 80 } },
         },
     },
     markdown = {
@@ -138,7 +143,7 @@ M.config = {
             treesitter = { name = 'python' },
             lsp = { name = 'pyright' },
             formatter = { enabled = false },
-            ruler = { width = 88 },
+            ruler = { columns = { 88 } },
         },
     },
     rust = {
@@ -173,6 +178,7 @@ M.config = {
             lsp = { name = 'systemd_ls' },
             linter = { name = 'systemdlint' },
             tab = { width = 8 },
+            ruler = { enabled = false },
         },
     },
     typos = {
@@ -188,6 +194,7 @@ M.config = {
             lsp = { name = 'yamlls' },
             formatter = { name = 'prettier' },
             linter = { name = 'yamllint' },
+            ruler = { enabled = false },
         },
     },
 }
