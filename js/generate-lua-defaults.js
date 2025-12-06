@@ -16,10 +16,10 @@ import { Entry } from './hare-conf-types.js'
  * @returns {string[]} The same `lines` array, modified in place.
  */
 function makeLinesEntry(lines, key) {
-    lines[0] = key + ' = ' + lines[0]
-    lines[lines.length - 1] += ','
+  lines[0] = key + ' = ' + lines[0]
+  lines[lines.length - 1] += ','
 
-    return lines
+  return lines
 }
 
 /**
@@ -42,34 +42,34 @@ function makeLinesEntry(lines, key) {
  * @returns {string[]} Lines representing the Lua value.
  */
 function valueToLines(value) {
-    const lines = []
-    if (value === null || value === undefined) {
-        lines.push('nil')
-    } else if (typeof value === 'string') {
-        lines.push(`'${value}'`)
-    } else if (typeof value === 'boolean') {
-        lines.push(value ? 'true' : 'false')
-    } else if (typeof value === 'number') {
-        lines.push(String(value))
-    } else if (Array.isArray(value)) {
-        lines.push('{')
-        for (const item of value) {
-            const itemLines = valueToLines(item)
-            // Add a trailing comma to each array element
-            itemLines[itemLines.length - 1] += ','
-            lines.push(...itemLines)
-        }
-        lines.push('}')
-    } else if (typeof value === 'object') {
-        lines.push('{')
-        // Treat plain objects as Lua tables: key = value
-        for (const [key, val] of Object.entries(value)) {
-            lines.push(...makeLinesEntry(valueToLines(val), key))
-        }
-        lines.push('}')
+  const lines = []
+  if (value === null || value === undefined) {
+    lines.push('nil')
+  } else if (typeof value === 'string') {
+    lines.push(`'${value}'`)
+  } else if (typeof value === 'boolean') {
+    lines.push(value ? 'true' : 'false')
+  } else if (typeof value === 'number') {
+    lines.push(String(value))
+  } else if (Array.isArray(value)) {
+    lines.push('{')
+    for (const item of value) {
+      const itemLines = valueToLines(item)
+      // Add a trailing comma to each array element
+      itemLines[itemLines.length - 1] += ','
+      lines.push(...itemLines)
     }
+    lines.push('}')
+  } else if (typeof value === 'object') {
+    lines.push('{')
+    // Treat plain objects as Lua tables: key = value
+    for (const [key, val] of Object.entries(value)) {
+      lines.push(...makeLinesEntry(valueToLines(val), key))
+    }
+    lines.push('}')
+  }
 
-    return lines
+  return lines
 }
 
 /**
@@ -84,24 +84,24 @@ function valueToLines(value) {
  * @returns {string[]} Lines representing the Lua table literal.
  */
 function generateLuaTable(entryMap) {
-    const lines = ['{']
-    for (const [key, entry] of Object.entries(entryMap)) {
-        if (entry instanceof Entry) {
-            const { defaultValue } = entry
-            lines.push(...makeLinesEntry(valueToLines(defaultValue), key))
-        } else if (typeof entry === 'object') {
-            // Nested table
-            lines.push(...makeLinesEntry(generateLuaTable(entry), key))
-        }
+  const lines = ['{']
+  for (const [key, entry] of Object.entries(entryMap)) {
+    if (entry instanceof Entry) {
+      const { defaultValue } = entry
+      lines.push(...makeLinesEntry(valueToLines(defaultValue), key))
+    } else if (typeof entry === 'object') {
+      // Nested table
+      lines.push(...makeLinesEntry(generateLuaTable(entry), key))
     }
-    lines.push('}')
+  }
+  lines.push('}')
 
-    return lines
+  return lines
 }
 
 // Build the final Lua module:
-// - First line: EmmyLua annotation for the HareConf type.
-// - Then the generated table, prefixed with `return`.
+//   - First line: EmmyLua annotation for the HareConf type.
+//   - Then the generated table, prefixed with `return`.
 const lines = ['---@type HareConf', ...generateLuaTable(hareConfDefinitions)]
 lines[1] = 'return ' + lines[1]
 

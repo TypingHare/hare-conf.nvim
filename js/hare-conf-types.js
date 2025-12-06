@@ -2,12 +2,12 @@
  * Enumeration of supported primitive configuration entry types.
  */
 export const T = Object.freeze({
-    NIL: 'nil',
-    STR: 'string',
-    NUMBER: 'number',
-    INT: 'integer',
-    BOOL: 'boolean',
-    ANY: 'any',
+  NIL: 'nil',
+  STR: 'string',
+  NUMBER: 'number',
+  INT: 'integer',
+  BOOL: 'boolean',
+  ANY: 'any',
 })
 
 /**
@@ -17,7 +17,7 @@ export const T = Object.freeze({
  * @property {Type} elementType - The type of the list elements.
  */
 export class List {
-    elementType = T.NIL
+  elementType = T.NIL
 }
 
 /**
@@ -28,8 +28,8 @@ export class List {
  * @property {Type} valueType - The type of the table values.
  */
 export class Table {
-    keyType = T.STR
-    valueType = T.ANY
+  keyType = T.STR
+  valueType = T.ANY
 }
 
 /**
@@ -40,8 +40,8 @@ export class Table {
  * @property {string} returnType - The return type of the function.
  */
 export class Fn {
-    paramTypes = []
-    returnTypes = T.NIL
+  paramTypes = []
+  returnTypes = T.NIL
 }
 
 /**
@@ -51,7 +51,7 @@ export class Fn {
  * @property {Type[]} types - The types in the union.
  */
 export class Union {
-    types = []
+  types = []
 }
 
 /**
@@ -62,8 +62,8 @@ export class Union {
  * @property {boolean} builtin - Whether the class is a built-in class in Lua.
  */
 export class ClassRef {
-    className = ''
-    isBuiltin = false
+  className = ''
+  isBuiltin = false
 }
 
 /**
@@ -79,10 +79,10 @@ export class ClassRef {
  * @property {*} defaultValue - The default value of the configuration entry.
  */
 export class Entry {
-    type = T.NIL
-    description = ''
-    nullable = false
-    defaultValue = null
+  type = T.NIL
+  description = ''
+  nullable = false
+  defaultValue = null
 }
 
 /**
@@ -92,10 +92,10 @@ export class Entry {
  * @returns {List} A new list type instance.
  */
 export function list(elementType = T.NIL) {
-    const list = new List()
-    list.elementType = elementType
+  const list = new List()
+  list.elementType = elementType
 
-    return list
+  return list
 }
 
 /**
@@ -106,11 +106,11 @@ export function list(elementType = T.NIL) {
  * @returns {Table} A new table type instance.
  */
 export function table(valueType = T.ANY, keyType = T.STR) {
-    const table = new Table()
-    table.keyType = keyType
-    table.valueType = valueType
+  const table = new Table()
+  table.keyType = keyType
+  table.valueType = valueType
 
-    return table
+  return table
 }
 
 /**
@@ -121,11 +121,11 @@ export function table(valueType = T.ANY, keyType = T.STR) {
  * @returns {Fn} A new function type instance.
  */
 export function fn(returnType = T.NIL, paramTypes = []) {
-    const fn = new Fn()
-    fn.returnTypes = returnType
-    fn.paramTypes = paramTypes
+  const fn = new Fn()
+  fn.returnTypes = returnType
+  fn.paramTypes = paramTypes
 
-    return fn
+  return fn
 }
 
 /**
@@ -135,18 +135,18 @@ export function fn(returnType = T.NIL, paramTypes = []) {
  * @returns {Union} A new literal type instance.
  */
 export function union(...types) {
-    const union = new Union()
-    union.types = types
+  const union = new Union()
+  union.types = types
 
-    return union
+  return union
 }
 
 export function classRef(className, builtin = false) {
-    const classRef = new ClassRef()
-    classRef.className = className
-    classRef.isBuiltin = builtin
+  const classRef = new ClassRef()
+  classRef.className = className
+  classRef.isBuiltin = builtin
 
-    return classRef
+  return classRef
 }
 
 /**
@@ -159,27 +159,27 @@ export function classRef(className, builtin = false) {
  * @returns {Entry} A new configuration entry instance.
  */
 export function entry(type, description, defaultValue, nullable = false) {
-    if (description === undefined) {
-        console.error('Description is required for configuration entry.')
-        process.exit(1)
-    }
+  if (description === undefined) {
+    console.error('Description is required for configuration entry.')
+    process.exit(1)
+  }
 
-    if (defaultValue === undefined) {
-        console.error('Default value is required for configuration entry.')
-        process.exit(1)
-    }
+  if (defaultValue === undefined) {
+    console.error('Default value is required for configuration entry.')
+    process.exit(1)
+  }
 
-    const entry = new Entry()
-    entry.type = type
-    entry.description = description
-    entry.defaultValue = defaultValue
-    entry.nullable = nullable
+  const entry = new Entry()
+  entry.type = type
+  entry.description = description
+  entry.defaultValue = defaultValue
+  entry.nullable = nullable
 
-    if (defaultValue === null) {
-        entry.nullable = true
-    }
+  if (defaultValue === null) {
+    entry.nullable = true
+  }
 
-    return entry
+  return entry
 }
 
 /**
