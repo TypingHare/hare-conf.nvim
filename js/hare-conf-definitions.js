@@ -8,12 +8,25 @@ const system = {
   buftype: {
     $class_name: 'hare.system.Buftype',
     $description: 'The configurations for system-wide buffer.',
-    exclude: entry(list(T.STR), 'Buffer types to be excluded in many scenarios.', []),
+    exclude: entry(list(T.STR), 'Buffer types to be excluded in many scenarios.', [
+      'nofile',
+      'quickfix',
+      'terminal',
+      'prompt',
+      'help',
+    ]),
   },
   filetype: {
     $class_name: 'hare.system.Filetype',
     $description: 'The configurations for system-wide filetype.',
-    exclude: entry(list(T.STR), 'Filetypes to be excluded in many scenarios.', []),
+    exclude: entry(list(T.STR), 'Filetypes to be excluded in many scenarios.', [
+      'help',
+      'qf',
+      'man',
+      'terminal',
+      'lazy',
+      'mason',
+    ]),
   },
 }
 
