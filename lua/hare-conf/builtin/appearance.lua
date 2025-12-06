@@ -2,7 +2,7 @@ local M = {}
 
 --- Applies appearance configurations.
 ---
---- @param config HareConfAppearance Appearance configurations.
+--- @param config hare.Appearance - Appearance configurations.
 function M.apply_appearance_config(config)
     if not config.netrw.enabled then
         vim.g.loaded_netrw = 1

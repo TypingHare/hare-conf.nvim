@@ -102,7 +102,7 @@ function generateLuaTable(entryMap) {
 // Build the final Lua module:
 //   - First line: EmmyLua annotation for the HareConf type.
 //   - Then the generated table, prefixed with `return`.
-const lines = ['---@type HareConf', ...generateLuaTable(hareConfDefinitions)]
+const lines = ['---@type hare.Config', ...generateLuaTable(hareConfDefinitions)]
 lines[1] = 'return ' + lines[1]
 
 console.log(lines.join('\n'))

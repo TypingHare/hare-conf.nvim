@@ -23,7 +23,7 @@ M.enable_languages_in_config = language.enable_languages_in_config
 
 --- Applies all configurations.
 ---
---- @param config HareConf The complete configuration table.
+--- @param config hare.Config The complete configuration table.
 M.apply_config = function(config)
     M.apply_appearance_config(config.appearance)
     M.apply_clipboard_config(config.clipboard)

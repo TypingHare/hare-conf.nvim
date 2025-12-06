@@ -2,7 +2,7 @@ local M = {}
 
 --- Applies editor appearance configurations.
 ---
---- @param config HareConfEditor Editor configurations.
+--- @param config hare.Editor - Editor configurations.
 function M.apply_editor_config(config)
     local hc = require 'hare-conf'
 
@@ -15,7 +15,7 @@ end
 
 --- Applies editor appearance configurations.
 ---
---- @param config HareConfEditorAppearance Editor appearance configurations.
+--- @param config hare.editor.Appearance - Editor appearance configurations.
 function M.apply_editor_appearance_config(config)
     local hc = require 'hare-conf'
 
@@ -50,7 +50,7 @@ end
 
 --- Applies diagnostic configurations.
 ---
---- @param config HareConfEditorDiagnostic Diagnostic configurations.
+--- @param config hare.editor.Diagnostic - Diagnostic configurations.
 function M.apply_diagnostic_config(config)
     vim.diagnostic.config {
         virtual_text = config.virtual_text,
@@ -62,6 +62,11 @@ function M.apply_diagnostic_config(config)
     }
 end
 
+--- Creates autocommands for applying buffer-specific configurations on buffer events.
+---
+--- This includes:
+---   - Setting indentation settings on `FileType` event.
+---   - Formatting on save on `BufWritePre` event.
 function M.create_buffer_autocommands()
     local hc = require 'hare-conf'
 
@@ -175,10 +180,10 @@ function M.install_mason_packages()
     --- Adds the package name from the tool entry to the name list if enabled and not already
     --- present.
     --- @param name_list string[] List of Mason package names.
-    --- @param tool_entry HareConfEditorBufferLsp
-    ---     | HareConfEditorBufferFormatter
-    ---     | HareConfEditorBufferLinter
-    ---     | HareConfEditorBufferDebugger
+    --- @param tool_entry hare.editor.buffer.Lsp
+    ---     | hare.editor.buffer.Formatter
+    ---     | hare.editor.buffer.Linter
+    ---     | hare.editor.buffer.Debugger
     ---     - HareConf tool entry.
     local add_package_name_to_list = function(name_list, tool_entry)
         if tool_entry.enabled then

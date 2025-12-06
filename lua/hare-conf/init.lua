@@ -10,6 +10,8 @@ M.NEOCONF_KEY_NAME = M.NAME
 M.COMMAND_NAME = 'Hareconf'
 
 -- Hare configuration
+--- @type hare.Config
+--- @diagnostic disable-next-line: missing-fields
 M.config = {}
 
 --- Retrieves the current Neoconf user configuration safely.
@@ -34,7 +36,7 @@ end
 
 --- Merges new configuration to the Hare configuration.
 ---
---- @param new_config HareConfInput | nil The new configuration to merge.
+--- @param new_config hare.ConfigInput | nil The new configuration to merge.
 function M.update_config(new_config)
     if new_config ~= nil then
         M.config = vim.tbl_deep_extend('force', M.config, new_config)
@@ -48,6 +50,7 @@ function M.get_root_path()
     return require('lazy.core.config').plugins['hare-conf.nvim'].dir
 end
 
+--- Ensures that the required build files are present, and runs `make build` if any are missing.
 function M.ensure_built()
     local root = M.get_root_path()
     local required_files = {
@@ -90,7 +93,7 @@ end
 
 --- Sets up HareConf.
 ---
---- @param opts HareConfInput|nil
+--- @param opts hare.ConfigInput | nil
 function M.setup(opts)
     -- Ensure the required files are built
     M.ensure_built()

@@ -2,7 +2,7 @@ local M = {}
 
 --- Applies clipboard configurations.
 ---
---- @param config HareConfClipboard Clipboard configurations.
+--- @param config hare.Clipboard - Clipboard configurations.
 function M.apply_clipboard_config(config)
     if config.enabled then
         local host = config.host

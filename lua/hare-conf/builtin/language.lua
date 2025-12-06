@@ -1,11 +1,11 @@
 local M = {}
 
----@class LanguageConfig
+---@class hare.builtin.language.Config
 ---@field filetypes string[] List of filetypes the configuration applies to
----@field buffer_config HareConfEditorBufferInput
+---@field buffer_config hare.editor.BufferInput Buffer-specific configurations.
 
 -- Language configurations mapped by language name
----@type table<string, LanguageConfig>
+---@type table<string, hare.builtin.language.Config>
 M.config = {
     lua = {
         filetypes = { 'lua' },
