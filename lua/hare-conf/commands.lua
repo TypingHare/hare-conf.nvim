@@ -96,6 +96,8 @@ vim.api.nvim_create_user_command(M.COMMAND_NAME, function(opts)
                 enabled_languages = M.fn.get_enabled_languages(),
             }
             display_lua_code(vim.inspect(object), 'Hare Languages')
+        elseif subcommand == 'make' then
+            M.run_make()
         else
             vim.notify('Unknown command: ' .. subcommand, vim.log.levels.WARN { title = M.NAME })
         end

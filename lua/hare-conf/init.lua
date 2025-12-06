@@ -75,8 +75,15 @@ function M.ensure_built()
         return
     end
 
+    M.run_make()
+end
+
+function M.run_make()
+    local root = M.get_root_path()
+
     vim.notify('Running make build...', vim.log.levels.INFO, { title = M.NAME })
     local result = vim.system({ 'make', 'build' }, { cwd = root }):wait()
+
     if result.code == 0 then
         vim.notify(
             'Build completed.\nYou have to restart Neovim to enable HareConf.',
