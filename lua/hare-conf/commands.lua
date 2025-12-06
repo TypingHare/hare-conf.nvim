@@ -99,7 +99,7 @@ vim.api.nvim_create_user_command(M.COMMAND_NAME, function(opts)
         elseif subcommand == 'make' then
             M.run_make()
         else
-            vim.notify('Unknown command: ' .. subcommand, vim.log.levels.WARN { title = M.NAME })
+            vim.notify('Unknown command: ' .. subcommand, vim.log.levels.WARN, { title = M.NAME })
         end
     else
         display_config()
