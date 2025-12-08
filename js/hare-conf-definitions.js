@@ -122,8 +122,9 @@ const editor = {
     treesitter: {
       $class_name: 'hare.editor.buffer.Treesitter',
       $description: 'The Tree-sitter configurations for the editor buffer.',
-      enabled: entry(T.BOOL, 'Whether to enable Tree-sitter.', true),
+      enabled: entry(T.BOOL, 'Whether to enable tree-sitter.', true),
       name: entry(T.STR, 'The default Tree-sitter parser to use.', null),
+      highlight_enabled: entry(T.BOOL, 'Whether to enable tree-sitter highlight.', true),
     },
     lsp: {
       $class_name: 'hare.editor.buffer.Lsp',

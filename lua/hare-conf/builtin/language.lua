@@ -58,7 +58,7 @@ M.config = {
     latex = {
         filetypes = { 'tex', 'bib' },
         buffer_config = {
-            treesitter = { name = 'bibtex' },
+            treesitter = { name = 'bibtex', highlight_enabled = false },
             lsp = { name = 'texlab' },
             formatter = { name = 'latexindent' },
             ruler = { enabled = false },
