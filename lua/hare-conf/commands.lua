@@ -93,6 +93,7 @@ vim.api.nvim_create_user_command(M.COMMAND_NAME, function(opts)
         elseif subcommand == 'lang' then
             local object = {
                 supported_languages = M.fn.get_supported_languages(),
+                declared_languages = M.config.language.names,
                 enabled_languages = M.fn.get_enabled_languages(),
             }
             display_lua_code(vim.inspect(object), 'Hare Languages')

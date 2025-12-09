@@ -18,8 +18,7 @@ M.install_mason_packages = editor.install_mason_packages
 M.enable_lsp = editor.enable_lsp
 M.set_up_conform = editor.set_up_conform
 
-M.enable_language = language.enable_language
-M.enable_languages_in_config = language.enable_languages_in_config
+M.use_builtin_language_config = language.use_builtin_language_config
 
 --- Applies all configurations.
 ---

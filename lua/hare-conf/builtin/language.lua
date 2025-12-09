@@ -1,11 +1,5 @@
 local M = {}
 
----@class hare.builtin.language.Config
----@field filetypes string[] List of filetypes the configuration applies to
----@field buffer_config hare.editor.BufferInput Buffer-specific configurations.
-
--- Language configurations mapped by language name
----@type table<string, hare.builtin.language.Config>
 M.config = {
     lua = {
         filetypes = { 'lua' },
@@ -199,42 +193,9 @@ M.config = {
     },
 }
 
--- List of enabled programming languages
----@type string[]
-M.enabled_languages = {}
-
---- Enables the configuration for a specific programming language. If the language is not found in
---- the configuration, a warning is logged.
----
----@param language_name string The name of the programming language to enable.
-function M.enable_language(language_name)
-    local hc = require 'hare-conf'
-
-    local language = M.config[language_name]
-    if not language then
-        vim.notify(
-            string.format('Language configuration for "%s" not found.', language_name),
-            vim.log.levels.WARN
-        )
-        return
-    end
-
-    local filetypes = language.filetypes
-    local buffer_config = language.buffer_config
-    hc.fn.set_buffer_config(filetypes, buffer_config)
-
-    -- Mark language as enabled
-    table.insert(M.enabled_languages, language_name)
-end
-
---- Enables all programming languages specified in the Hare configuration.
-function M.enable_languages_in_config()
-    local hc = require 'hare-conf'
-
-    local languages = hc.config.language.names or {}
-    for _, language_name in ipairs(languages) do
-        M.enable_language(language_name)
-    end
+--- Uses builtin language configuration.
+function M.use_builtin_language_config()
+    require('hare-conf').fn.set_language_config(M.config)
 end
 
 return M

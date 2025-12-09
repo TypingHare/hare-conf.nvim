@@ -10,7 +10,10 @@ M.collect_buffer_configs = buffer_functions.collect_buffer_configs
 
 local language_functions = require 'hare-conf.functions.language'
 M.get_supported_languages = language_functions.get_supported_languages
+M.set_language_config = language_functions.set_language_config
 M.get_enabled_languages = language_functions.get_enabled_languages
+M.enable_language = language_functions.enable_language
+M.enable_languages_in_config = language_functions.enable_languages_in_config
 
 --- Sets a highlight group.
 ---
