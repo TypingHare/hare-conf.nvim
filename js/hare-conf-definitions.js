@@ -131,24 +131,44 @@ const editor = {
       $description: 'The LSP configurations for the editor buffer.',
       enabled: entry(T.BOOL, 'Whether to enable LSP.', true),
       name: entry(T.STR, 'The default LSP to use.', null),
+      packages: entry(
+        list(classRef('hare.classes.MasonPackageEntry')),
+        'The Mason packages for the LSP.',
+        null
+      ),
     },
     linter: {
       $class_name: 'hare.editor.buffer.Linter',
       $description: 'The linter configurations for the editor buffer.',
       enabled: entry(T.BOOL, 'Whether to enable the linter.', true),
       name: entry(T.STR, 'The default linter to use.', null),
+      packages: entry(
+        list(classRef('hare.classes.MasonPackageEntry')),
+        'The Mason packages for the linter.',
+        null
+      ),
     },
     formatter: {
       $class_name: 'hare.editor.buffer.Formatter',
       $description: 'The formatter configurations for the editor buffer.',
       enabled: entry(T.BOOL, 'Whether to enable the formatter.', true),
       name: entry(T.STR, 'The default formatter to use.', null),
+      packages: entry(
+        list(classRef('hare.classes.MasonPackageEntry')),
+        'The Mason packages for the formatter.',
+        null
+      ),
     },
     debugger: {
       $class_name: 'hare.editor.buffer.Debugger',
       $description: 'The debugger configurations for the editor buffer.',
       enabled: entry(T.BOOL, 'Whether to enable the debugger.', true),
       name: entry(T.STR, 'The default debugger to use.', null),
+      packages: entry(
+        list(classRef('hare.classes.MasonPackageEntry')),
+        'The Mason packages for the debugger.',
+        null
+      ),
     },
     format_on_save: entry(T.BOOL, 'Whether to format the buffer automatically on save.', true),
   },
@@ -189,4 +209,13 @@ export const hareConfDefinitions = {
   language,
   clipboard,
   terminal,
+}
+
+export const hareConfExtraClasses = {
+  'hare.classes.MasonPackageEntry': {
+    $class_name: 'hare.classes.MasonPackageEntry',
+    $description: 'Represents a Mason package entry with specific details.',
+    package_name: entry(T.STR, 'The name of the Mason package.', null),
+    executable: entry(T.STR, 'The executable provided by the Mason package.', null),
+  },
 }

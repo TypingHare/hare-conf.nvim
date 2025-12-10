@@ -100,14 +100,16 @@ end
 
 --- Collects editor buffer configurations for all filetypes.
 ---
---- @return hare.editor.Buffer[] List of buffer configurations.
+--- @return table<string, hare.editor.Buffer> - A table mapping filetypes to their editor buffer
+---     configurations.
 function M.collect_buffer_configs()
     local hc = require 'hare-conf'
 
-    ---@type hare.editor.Buffer[]
+    ---@type table<string, hare.editor.Buffer>
     local buffer_configs = {}
     for filetype, _ in pairs(hc.config.editor.filetype) do
         local buffer_config = hc.fn.get_buffer_config(filetype)
+        buffer_configs[filetype] = buffer_config
         table.insert(buffer_configs, buffer_config)
     end
 

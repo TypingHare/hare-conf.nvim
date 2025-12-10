@@ -7,6 +7,7 @@ build:
 
 build-lua-types:
 	node js/generate-lua-types.js > lua/hare-conf/types.lua
+	echo '' >> lua/hare-conf/types.lua
 	node js/generate-lua-types.js --input >> lua/hare-conf/types.lua
 
 build-lua-defaults:

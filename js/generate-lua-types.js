@@ -1,4 +1,4 @@
-import { hareConfDefinitions } from './hare-conf-definitions.js'
+import { hareConfDefinitions, hareConfExtraClasses } from './hare-conf-definitions.js'
 import { T, Entry, List, Table, Fn, Union, ClassRef } from './hare-conf-types.js'
 
 const ROOT_CLASS_NAME = 'hare.Config'
@@ -54,6 +54,22 @@ function createLuaField(name, luaType, description, nullable) {
 }
 
 /**
+ * Creates a Lua alias annotation.
+ *
+ * @param {string} name The name of the alias.
+ * @param {string} luaType The Lua type annotation.
+ * @param {string} description The description of the alias.
+ * @param {boolean} nullable Whether the alias is nullable.
+ * @returns {string} The Lua alias annotation.
+ */
+function createLuaAlias(name, luaType, description, nullable) {
+  const nil = nullable ? ' | nil' : ''
+  const desc = description ? `  # ${description}` : ''
+
+  return `---@alias ${name} ${luaType}${nil}${desc}`.trim()
+}
+
+/**
  * @param {string} className The name of the Lua class.
  * @param {EntryMap} entryMap The map of entries to include in the class.
  * @param {boolean} [isInput=false] Whether the type is for user input types.
@@ -92,6 +108,27 @@ function createLuaClass(className, entryMap, isInput = false) {
   return lines
 }
 
-const luaFileContent = createLuaClass(ROOT_CLASS_NAME, hareConfDefinitions, isInput).join('\n')
+const hareConfDefinitionsLuaTypes = createLuaClass(ROOT_CLASS_NAME, hareConfDefinitions, isInput)
+
+const hareConfExtraClassesLuaTypes = (function (extraClasses) {
+  const lines = []
+  for (const [key, entry] of Object.entries(extraClasses)) {
+    if (entry instanceof Entry) {
+      const { type, description, nullable } = entry
+      const luaType = toLuaType(type, isInput)
+      const aliasName = isInput ? key + INPUT_CLASS_SUFFIX : key
+      lines.push(createLuaAlias(aliasName, luaType, description, nullable))
+    } else if (typeof entry === 'object') {
+      const moreLines = createLuaClass(entry.$class_name, entry, isInput)
+      lines.push('', ...moreLines)
+    }
+  }
+
+  return lines
+})(hareConfExtraClasses)
+
+const luaFileContent = [...hareConfDefinitionsLuaTypes, '', ...hareConfExtraClassesLuaTypes].join(
+  '\n'
+)
 
 console.log(luaFileContent)
