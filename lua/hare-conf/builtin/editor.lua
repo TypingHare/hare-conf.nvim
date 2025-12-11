@@ -28,7 +28,8 @@ function M.apply_editor_appearance_config(config)
 
     -- Sign column (sign_column)
     vim.opt.signcolumn = config.sign_column.enabled and 'yes' or 'no'
-    -- Fill chars (fill_chars) vim.opt.fillchars:append { eob = config.fill_chars }
+    -- Fill chars (fill_chars)
+    vim.opt.fillchars:append { eob = config.fill_chars }
 
     -- Cursor & cursor_insert
     vim.opt.guicursor = {
