@@ -8,6 +8,7 @@ function M.apply_editor_config(config)
 
     M.apply_editor_appearance_config(config.appearance)
     M.apply_diagnostic_config(config.diagnostic)
+    M.apply_treesitter_config(config.buffer.treesitter)
 
     hc.fn.clear_buffer_config_cache()
     M.create_buffer_autocommands()
@@ -27,9 +28,7 @@ function M.apply_editor_appearance_config(config)
 
     -- Sign column (sign_column)
     vim.opt.signcolumn = config.sign_column.enabled and 'yes' or 'no'
-
-    -- Fill chars (fill_chars)
-    vim.opt.fillchars:append { eob = config.fill_chars }
+    -- Fill chars (fill_chars) vim.opt.fillchars:append { eob = config.fill_chars }
 
     -- Cursor & cursor_insert
     vim.opt.guicursor = {
@@ -60,6 +59,36 @@ function M.apply_diagnostic_config(config)
         signs = config.signs,
         severity_sort = config.severity_sort,
     }
+end
+
+--- Applies treesitter configurations.
+---
+--- @param config hare.editor.buffer.Treesitter
+function M.apply_treesitter_config(config)
+    local hc = require 'hare-conf'
+
+    if config.highlight_enabled then
+        local ok, nvim_treesitter_configs = pcall(require, 'nvim-treesitter.configs')
+        if ok then
+            local buffer_configs = hc.fn.collect_buffer_configs()
+
+            ---@type string[]
+            local disable_highlight_filetypes = {}
+            for filetype, buffer_config in pairs(buffer_configs) do
+                if not buffer_config.treesitter.highlight_enabled then
+                    table.insert(disable_highlight_filetypes, filetype)
+                end
+            end
+
+            ---@diagnostic disable-next-line missing-fields
+            nvim_treesitter_configs.setup {
+                highlight = {
+                    enable = true,
+                    disable = disable_highlight_filetypes,
+                },
+            }
+        end
+    end
 end
 
 --- Creates autocommands for applying buffer-specific configurations on buffer events.
@@ -177,19 +206,38 @@ function M.install_mason_packages()
         return
     end
 
-    --- Adds the package name from the tool entry to the name list if enabled and not already
-    --- present.
+    local add_package_name_to_list = function(name_list, package_name)
+        if not vim.tbl_contains(name_list, package_name) then
+            table.insert(name_list, package_name)
+        end
+    end
+
+    --- Resolves Mason package names from a HareConf tool entry and adds them to the provided list.
+    ---
     --- @param name_list string[] List of Mason package names.
     --- @param tool_entry hare.editor.buffer.Lsp
     ---     | hare.editor.buffer.Formatter
     ---     | hare.editor.buffer.Linter
     ---     | hare.editor.buffer.Debugger
     ---     - HareConf tool entry.
-    local add_package_name_to_list = function(name_list, tool_entry)
-        if tool_entry.enabled then
-            local tool_name = tool_entry.name
-            if tool_name and not vim.tbl_contains(name_list, tool_name) then
-                table.insert(name_list, tool_name)
+    local resolve_package_names = function(name_list, tool_entry)
+        -- TODO: refactor this
+        if not tool_entry or tool_entry.name then
+            return
+        end
+
+        local package_name = tool_entry.name
+        if type(package_name) == 'string' then
+            add_package_name_to_list(name_list, package_name)
+        elseif type(package_name) == 'table' then
+            if vim.islist(package_name) then
+                for _, name in pairs(package_name) do
+                    add_package_name_to_list(name_list, name)
+                end
+            else
+                if package_name.package_name then
+                    add_package_name_to_list(name_list, package_name.package_name)
+                end
             end
         end
     end
@@ -199,10 +247,10 @@ function M.install_mason_packages()
     ---@type string[]
     local package_names = {}
     for _, buffer_config in pairs(buffer_configs) do
-        add_package_name_to_list(package_names, buffer_config.lsp)
-        add_package_name_to_list(package_names, buffer_config.formatter)
-        add_package_name_to_list(package_names, buffer_config.linter)
-        add_package_name_to_list(package_names, buffer_config.debugger)
+        resolve_package_names(package_names, buffer_config.lsp)
+        resolve_package_names(package_names, buffer_config.formatter)
+        resolve_package_names(package_names, buffer_config.linter)
+        resolve_package_names(package_names, buffer_config.debugger)
     end
 
     local lspconfig_to_package = mappings.get_mason_map().lspconfig_to_package
@@ -291,13 +339,24 @@ function M.set_up_conform()
     ---@type table<string, string[]>
     local formatters_by_ft = {}
     for filetype, _ in pairs(hc.config.editor.filetype) do
-        local buffer_config = hc.fn.get_buffer_config(filetype)
-        if buffer_config.formatter.enabled then
-            local formatter_name = buffer_config.formatter.name
-            if formatter_name then
-                formatters_by_ft[filetype] = { formatter_name }
-            end
-        end
+        -- TODO: refactor this
+        -- local buffer_config = hc.fn.get_buffer_config(filetype)
+        -- if buffer_config.formatter.enabled then
+        --     local formatter_name = buffer_config.formatter.name
+        --     if formatter_name then
+        --         if type(formatter_name) == 'string' then
+        --             formatters_by_ft[filetype] = { formatter_name }
+        --         elseif vim.islist(formatter_name) then
+        --             if type(formatter_name[0]) == 'string' then
+        --                 formatters_by_ft[filetype] = formatter_name
+        --             end
+        --         elseif type(formatter_name) == 'table' then
+        --             if formatter_name.package_name then
+        --                 formatters_by_ft[filetype] = { formatter_name.package_name }
+        --             end
+        --         end
+        --     end
+        -- end
     end
 
     conform.setup { formatters_by_ft = formatters_by_ft }
