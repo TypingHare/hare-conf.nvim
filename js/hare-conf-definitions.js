@@ -45,6 +45,36 @@ const appearance = {
     light: entry(T.STR, 'The light theme.', 'default'),
     dark: entry(T.STR, 'The dark theme.', 'default'),
   },
+  cursor: {
+    $class_name: 'hare.appearance.Cursor',
+    $description: 'The cursor appearance configurations.',
+    enabled: entry(T.BOOL, 'Whether to enable custom cursor appearance.', true),
+    cursor_normal_highlight: entry(
+      CLASS_HIGHLIGHT_GROUP,
+      'The highlight group for the normal mode cursor.',
+      null
+    ),
+    cursor_insert_highlight: entry(
+      CLASS_HIGHLIGHT_GROUP,
+      'The highlight group for the insert mode cursor.',
+      null
+    ),
+    cursor_visual_highlight: entry(
+      CLASS_HIGHLIGHT_GROUP,
+      'The highlight group for the visual mode cursor.',
+      null
+    ),
+    cursor_command_highlight: entry(
+      CLASS_HIGHLIGHT_GROUP,
+      'The highlight group for the command mode cursor.',
+      null
+    ),
+    cursor_terminal_highlight: entry(
+      CLASS_HIGHLIGHT_GROUP,
+      'The highlight group for the terminal mode cursor.',
+      null
+    ),
+  },
 }
 
 const editor = {

@@ -14,7 +14,7 @@ export const T = Object.freeze({
  * List type (array-like table in Lua) representation.
  *
  * @class
- * @property {Type} elementType - The type of the list elements.
+ * @property {Type} elementType The type of the list elements.
  */
 export class List {
   elementType = T.NIL
@@ -24,8 +24,8 @@ export class List {
  * Table type (dictionary-like table in Lua) representation.
  *
  * @class
- * @property {Type} keyType - The type of the table keys.
- * @property {Type} valueType - The type of the table values.
+ * @property {Type} keyType The type of the table keys.
+ * @property {Type} valueType The type of the table values.
  */
 export class Table {
   keyType = T.STR
@@ -36,8 +36,8 @@ export class Table {
  * Function type representation.
  *
  * @class
- * @property {Type[]} paramTypes - The parameters of the function.
- * @property {string} returnType - The return type of the function.
+ * @property {Type[]} paramTypes The parameters of the function.
+ * @property {Type} returnType The return type of the function.
  */
 export class Fn {
   paramTypes = []
@@ -48,7 +48,7 @@ export class Fn {
  * Union type representation.
  *
  * @class
- * @property {Type[]} types - The types in the union.
+ * @property {Type[]} types The types in the union.
  */
 export class Union {
   types = []
@@ -58,8 +58,8 @@ export class Union {
  * Class reference representation.
  *
  * @class
- * @property {string} className - The name of the referenced class.
- * @property {boolean} builtin - Whether the class is a built-in class in Lua.
+ * @property {string} className The name of the referenced class.
+ * @property {boolean} builtin Whether the class is a built-in class in Lua.
  */
 export class ClassRef {
   className = ''
@@ -67,16 +67,16 @@ export class ClassRef {
 }
 
 /**
- * @typedef {T | Fn | Union} Type
+ * @typedef {T | List | Table | Fn | Union | ClassRef} Type
  */
 
 /**
  * Configuration entry representation.
  *
  * @class
- * @property {string} type - The type of the configuration entry.
- * @property {string} description - The description of the configuration entry.
- * @property {*} defaultValue - The default value of the configuration entry.
+ * @property {Type} type The type of the configuration entry.
+ * @property {string} description The description of the configuration entry.
+ * @property {*} defaultValue The default value of the configuration entry.
  */
 export class Entry {
   type = T.NIL
@@ -88,7 +88,7 @@ export class Entry {
 /**
  * Factory function to create a new list type.
  *
- * @param {Type} [elementType=T.NIL] - The type of the list elements.
+ * @param {Type} [elementType=T.NIL] The type of the list elements.
  * @returns {List} A new list type instance.
  */
 export function list(elementType = T.NIL) {
@@ -101,8 +101,8 @@ export function list(elementType = T.NIL) {
 /**
  * Factory function to create a new table type.
  *
- * @param {Type} [valueType=T.ANY] - The type of the table values.
- * @param {Type} [keyType=T.STR] - The type of the table keys.
+ * @param {Type} [valueType=T.ANY] The type of the table values.
+ * @param {Type} [keyType=T.STR] The type of the table keys.
  * @returns {Table} A new table type instance.
  */
 export function table(valueType = T.ANY, keyType = T.STR) {
@@ -116,8 +116,8 @@ export function table(valueType = T.ANY, keyType = T.STR) {
 /**
  * Factory function to create a new function type.
  *
- * @param {Type} [returnType=T.NIL] - The return type of the function.
- * @param {Type[]} [paramTypes=[]] - The parameter types of the function.
+ * @param {Type} [returnType=T.NIL] The return type of the function.
+ * @param {Type[]} [paramTypes=[]] The parameter types of the function.
  * @returns {Fn} A new function type instance.
  */
 export function fn(returnType = T.NIL, paramTypes = []) {
@@ -131,7 +131,7 @@ export function fn(returnType = T.NIL, paramTypes = []) {
 /**
  * Factory function to create a new Union type.
  *
- * @param {Type[]} types - The types in the union.
+ * @param {Type[]} types The types in the union.
  * @returns {Union} A new literal type instance.
  */
 export function union(...types) {
@@ -141,6 +141,13 @@ export function union(...types) {
   return union
 }
 
+/**
+ * Factory function to create a new class reference.
+ *
+ * @param {string} className The class name.
+ * @param {bool} builtin Is the class a class that is defined out of HareConf. If false, HareConf
+ *   will create a definition in Lua and JSON schema.
+ */
 export function classRef(className, builtin = false) {
   const classRef = new ClassRef()
   classRef.className = className
@@ -152,10 +159,10 @@ export function classRef(className, builtin = false) {
 /**
  * Factory function to create a new configuration entry.
  *
- * @param {Type} type - The type of the configuration entry.
- * @param {string} description - The description of the configuration entry.
- * @param {*} defaultValue - The default value of the configuration entry.
- * @param {boolean} [nullable=false] - Whether the configuration entry can be null.
+ * @param {Type} type The type of the configuration entry.
+ * @param {string} description The description of the configuration entry.
+ * @param {*} defaultValue The default value of the configuration entry.
+ * @param {boolean} [nullable=false] Whether the configuration entry can be null.
  * @returns {Entry} A new configuration entry instance.
  */
 export function entry(type, description, defaultValue, nullable = false) {
@@ -186,8 +193,8 @@ export function entry(type, description, defaultValue, nullable = false) {
  * A recursive map of configuration entries.
  *
  * Keys are Lua table keys; values are either:
- * - an {@link Entry} instance (leaf node), or
- * - another EntryMap (nested table).
+ *  - an {@link Entry} instance (leaf node), or
+ *  - another EntryMap (nested table).
  *
  * @typedef {Object<string, Entry | EntryMap>} EntryMap
  */
