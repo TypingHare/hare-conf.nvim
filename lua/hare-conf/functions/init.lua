@@ -7,6 +7,7 @@ M.set_buffer_config = buffer_functions.set_buffer_config
 M.set_buffer_config_aliases = buffer_functions.set_buffer_config_aliases
 M.clear_buffer_config_cache = buffer_functions.clear_buffer_config_cache
 M.collect_buffer_configs = buffer_functions.collect_buffer_configs
+M.get_ruler_columns = buffer_functions.get_ruler_columns
 
 local language_functions = require 'hare-conf.functions.language'
 M.get_supported_languages = language_functions.get_supported_languages
