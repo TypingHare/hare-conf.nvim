@@ -18,6 +18,10 @@ M.COMMAND_NAME = 'Hareconf'
 --- @diagnostic disable-next-line: missing-fields
 M.config = {}
 
+--- Whether HareConf's setup is completed.
+--- @type boolean
+M.setup_completed = false
+
 --- Logs an info message with the plugin name as the title.
 ---
 --- @param message string - The warning message to log.
@@ -138,6 +142,9 @@ function M.setup(opts)
 
     -- Set up all commands.
     require 'hare-conf.commands'
+
+    -- Mark setup_completed as true.
+    M.setup_completed = true
 end
 
 return M
