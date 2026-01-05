@@ -75,65 +75,20 @@ function M.apply_diagnostic()
     }
 end
 
---- Applies Tree-sitter parser installation and configuration.
+--- Applies Tree-sitter integration for buffers.
 ---
---- This function performs two related tasks:
---- 1. Collects required Tree-sitter parser names from all buffer configurations and installs any
----    any missing parsers that are supported by `nvim-treesitter`.
---- 2. When Tree-sitter is enabled, configures syntax highlighting and selectively disables
----    highlighting for filetypes that opt out via per-buffer settings.
+--- This function reads Tree-sitter-related settings from the global
+--- `hare.config.editor.buffer.treesitter` configuration and merges them with per-buffer overrides
+--- collected via `hare.fn.collect_buffer_configs()`.
 ---
---- All Tree-sitter integration is guarded by `pcall` to ensure safe operation when
---- `nvim-treesitter` is not installed or not yet loaded.-- Applies Tree-sitter configuration.
+--- When Tree-sitter highlighting is enabled globally, it configures `nvim-treesitter.configs` to:
+---
+---     - Enable highlighting by default
+---     - Disable highlighting for filetypes that explicitly opt out
+---
 function M.apply_treesitter()
     local treesitter = hare.config.editor.buffer.treesitter
     local buffer_configs = hare.fn.collect_buffer_configs()
-
-    -- Install treesitter parsers.
-    local ok_parsers, parsers = pcall(require, 'nvim-treesitter.parsers')
-    if ok_parsers then
-        ---@type string[]
-        local treesitter_names = {}
-
-        local function insert_if_valid(name)
-            if name ~= '' and not vim.tbl_contains(treesitter_names, name) then
-                table.insert(treesitter_names, name)
-            end
-        end
-
-        -- Collect required treesitter parsers from buffer configurations.
-        for _, buffer_config in pairs(buffer_configs) do
-            local treesitter_name = buffer_config.treesitter.name
-            if type(treesitter_name) == 'string' then
-                insert_if_valid(treesitter_name)
-            elseif type(treesitter_name) == 'table' and vim.islist(treesitter_name) then
-                for _, name in ipairs(treesitter_name) do
-                    insert_if_valid(name)
-                end
-            end
-        end
-
-        -- Check which parsers are missing.
-        ---@type string[]
-        local parsers_to_install = {}
-        for _, name in ipairs(treesitter_names) do
-            if not parsers.has_parser(name) then
-                local parser_config = parsers.get_parser_configs()[name]
-                if parser_config then
-                    table.insert(parsers_to_install, name)
-                end
-            end
-        end
-
-        -- Install missing tree-sitter parsers.
-        if #parsers_to_install > 0 then
-            vim.cmd('TSInstall ' .. table.concat(parsers_to_install, ' '))
-        end
-    else
-        hare.warn(
-            '(apply_treesitter) nvim-treesitter is not loaded;' .. ' skipping parser installation.'
-        )
-    end
 
     -- Configure treesitter highlighting.
     if treesitter.enabled and treesitter.highlight_enabled then
@@ -157,6 +112,73 @@ function M.apply_treesitter()
         end
     end
 end
+
+--- Installs required Tree-sitter parsers based on buffer configuration.
+---
+--- This function inspects all collected buffer configurations and extracts Tree-sitter parser
+--- requirements declared via `buffer_config.treesitter.name`. Supported forms:
+---
+---     - A single parser name (`string`)
+---     - A list of parser names (`string[]`)
+---
+--- It then:
+---
+---     - Deduplicates parser names
+---     - Filters out empty or invalid entries
+---     - Skips parsers that are already installed
+---     - Installs missing parsers using `:TSInstall`
+---
+--- If `nvim-treesitter` is not available, the function fails gracefully and emits a warning instead
+--- of throwing an error.
+function M.install_treesitter_parsers()
+    local buffer_configs = hare.fn.collect_buffer_configs()
+
+    local ok_parsers, parsers = pcall(require, 'nvim-treesitter.parsers')
+    local ok_install, config = pcall(require, 'nvim-treesitter.config')
+    if ok_parsers and ok_install then
+        ---@type string[]
+        local parser_names = {}
+
+        local function insert_if_valid(name)
+            if name ~= '' and not vim.tbl_contains(parser_names, name) then
+                table.insert(parser_names, name)
+            end
+        end
+
+        -- Collect required treesitter parsers from buffer configurations.
+        for _, buffer_config in pairs(buffer_configs) do
+            local parser_name = buffer_config.treesitter.name
+            if type(parser_name) == 'string' then
+                insert_if_valid(parser_name)
+            elseif type(parser_name) == 'table' and vim.islist(parser_name) then
+                for _, name in ipairs(parser_name) do
+                    insert_if_valid(name)
+                end
+            end
+        end
+
+        -- Collect parsers that are yet installed.
+        ---@type string[]
+        local installed_parsers = config.get_installed()
+        ---@type string[]
+        local parsers_to_install = {}
+        for _, parser_name in ipairs(parser_names) do
+            if parsers[parser_name] and not vim.tbl_contains(installed_parsers, parser_name) then
+                table.insert(parsers_to_install, parser_name)
+            end
+        end
+
+        -- Install missing tree-sitter parsers.
+        if #parsers_to_install > 0 then
+            vim.cmd('TSInstall ' .. table.concat(parsers_to_install, ' '))
+        end
+    else
+        hare.warn(
+            '(apply_treesitter) nvim-treesitter is not loaded;' .. ' skipping parser installation.'
+        )
+    end
+end
+
 --- Applies per-buffer indentation settings.
 ---
 --- Registers a `FileType` autocommand that configures indentation options for each buffer based on
