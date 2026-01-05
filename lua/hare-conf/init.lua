@@ -105,13 +105,13 @@ end
 --- successful, it notifies the user that a restart of Neovim is required to enable HareConf. If
 --- the build fails, it logs a warning with the error message.
 function M.run_make_build()
-    M.info 'Running make build...'
+    M.info('[' .. M.NAME .. '] Running `make build`...')
 
     local result = vim.system({ 'make', 'build' }, { cwd = M.get_root_path() }):wait()
     if result.code == 0 then
-        M.info 'Build completed.\nYou have to restart Neovim to enable HareConf.'
+        M.info('[' .. M.NAME .. '] Build completed. You have to restart Neovim to enable HareConf.')
     else
-        M.error('Build failed:\n' .. (result.stderr or result.stdout))
+        M.error('[' .. M.NAME .. '] Build failed:\n' .. (result.stderr or result.stdout))
     end
 end
 
