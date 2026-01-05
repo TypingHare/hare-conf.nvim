@@ -66,8 +66,8 @@ M.config = {
         filetypes = { 'cmake' },
         buffer_config = {
             treesitter = { name = 'cmake' },
-            formatter = { name = 'cmakelint' },
             lsp = { name = 'cmake' },
+            linter = { name = 'cmakelint' },
             ruler = { columns = { 80 } },
         },
     },
@@ -120,7 +120,11 @@ M.config = {
             treesitter = { name = 'make' },
             lsp = { name = 'mbake' },
             linter = { name = 'checkmake' },
-            --formatter = { name = 'mbake' },
+            formatter = {
+                packages = {
+                    { package_name = 'mbake', executable = 'bake' },
+                },
+            },
             indent = { type = 'tabs', display_width = 4 },
             ruler = { columns = { 80 } },
         },
