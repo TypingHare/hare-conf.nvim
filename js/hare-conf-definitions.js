@@ -1,5 +1,6 @@
 import { entry, union, T, list, table, classRef } from "./hare-conf-types.js";
 
+const VERSION = "2026.1";
 const CLASS_HIGHLIGHT_GROUP = classRef("vim.api.keyset.highlight", true);
 
 const system = {
@@ -289,7 +290,7 @@ const terminal = {
 };
 
 export const hareConfDefinitions = {
-  $version: "2025.1",
+  $version: VERSION,
   system,
   appearance,
   editor,

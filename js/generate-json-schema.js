@@ -1,5 +1,16 @@
-import { T, List, Table, Fn, Union, Entry, ClassRef } from './hare-conf-types.js'
-import { hareConfDefinitions } from './hare-conf-definitions.js'
+import {
+  T,
+  List,
+  Table,
+  Fn,
+  Union,
+  Entry,
+  ClassRef,
+} from "./hare-conf-types.js";
+import {
+  hareConfDefinitions,
+  hareConfExtraClasses,
+} from "./hare-conf-definitions.js";
 
 /**
  * Converts a Hare configuration type to a JSON schema type.
@@ -8,49 +19,49 @@ import { hareConfDefinitions } from './hare-conf-definitions.js'
  * @returns {Object} - The corresponding JSON schema type.
  */
 function toJsonSchemaType(type) {
-  if (typeof type === 'string') {
+  if (typeof type === "string") {
     switch (type) {
       case T.NIL:
-        return { type: 'null' }
+        return { type: "null" };
       case T.STR:
-        return { type: 'string' }
+        return { type: "string" };
       case T.NUMBER:
-        return { type: 'number' }
+        return { type: "number" };
       case T.INT:
-        return { type: 'integer' }
+        return { type: "integer" };
       case T.BOOL:
-        return { type: 'boolean' }
+        return { type: "boolean" };
       case T.ANY:
-        return {}
+        return {};
     }
 
     // Enumeration of string literals
-    return { const: type }
+    return { const: type };
   } else if (type instanceof List) {
     return {
-      type: 'array',
+      type: "array",
       items: toJsonSchemaType(type.elementType),
-    }
+    };
   } else if (type instanceof Fn) {
     return {
-      type: 'object',
-    }
+      type: "object",
+    };
   } else if (type instanceof Union) {
-    const types = type.types.map((type) => toJsonSchemaType(type))
-    if (types.every((type) => type.hasOwnProperty('const'))) {
-      return { enum: types.map((type) => type.const) }
+    const types = type.types.map((type) => toJsonSchemaType(type));
+    if (types.every((type) => type.hasOwnProperty("const"))) {
+      return { enum: types.map((type) => type.const) };
     } else {
-      return { anyOf: types }
+      return { anyOf: types };
     }
   } else if (type instanceof Table) {
     return {
-      type: 'object',
+      type: "object",
       additionalProperties: toJsonSchemaType(type.valueType),
-    }
+    };
   } else if (type instanceof ClassRef) {
     return {
       $ref: `#${type.className}`,
-    }
+    };
   }
 }
 
@@ -61,10 +72,10 @@ function toJsonSchemaType(type) {
  * @returns {Object} - The generated JSON schema.
  */
 function generateJsonSchemaFromEntry(entry) {
-  const { type, description } = entry
-  const schema = { description, ...toJsonSchemaType(type) }
+  const { type, description } = entry;
+  const schema = { description, ...toJsonSchemaType(type) };
 
-  return schema
+  return schema;
 }
 
 /**
@@ -75,44 +86,50 @@ function generateJsonSchemaFromEntry(entry) {
  * @returns {Object} - The generated JSON schema.
  */
 function generateJsonSchema(className, entryMap) {
-  const properties = {}
+  const properties = {};
   for (const [name, entry] of Object.entries(entryMap)) {
     if (entry instanceof Entry) {
-      properties[name] = generateJsonSchemaFromEntry(entry)
-    } else if (typeof entry === 'object') {
-      const childClassName = entry.$class_name
-      properties[name] = generateJsonSchema(childClassName, entry)
+      properties[name] = generateJsonSchemaFromEntry(entry);
+    } else if (typeof entry === "object") {
+      const childClassName = entry.$class_name;
+      properties[name] = generateJsonSchema(childClassName, entry);
     }
   }
 
   return {
     $anchor: className,
-    type: 'object',
+    type: "object",
     properties,
     additionalProperties: false,
-  }
+  };
 }
 
-const hareConfSchema = generateJsonSchema('HareConf', hareConfDefinitions)
+const hareConfSchema = generateJsonSchema("HareConf", hareConfDefinitions);
+const extraClassesSchema = {};
+for (const [key, entry] of Object.entries(hareConfExtraClasses)) {
+  extraClassesSchema[key] = generateJsonSchema(entry.$class_name, entry);
+}
+
 const jsonSchema = {
-  $schema: 'https://json-schema.org/draft/2020-12/schema',
+  $schema: "https://json-schema.org/draft/2020-12/schema",
   $defs: {
     Highlight: {
-      $anchor: 'vim.api.keyset.highlight',
-      type: 'object',
+      $anchor: "vim.api.keyset.highlight",
+      type: "object",
       properties: {
-        fg: { type: 'string' },
-        bg: { type: 'string' },
-        bold: { type: 'boolean' },
+        fg: { type: "string" },
+        bg: { type: "string" },
+        bold: { type: "boolean" },
       },
       additionalProperties: false,
     },
+    ...extraClassesSchema,
   },
-  title: 'HareConf Schema',
-  type: 'object',
+  title: "HareConf Schema",
+  type: "object",
   properties: {
     HareConf: hareConfSchema,
   },
-}
+};
 
-console.log(JSON.stringify(jsonSchema, null, 2))
+console.log(JSON.stringify(jsonSchema, null, 2));
