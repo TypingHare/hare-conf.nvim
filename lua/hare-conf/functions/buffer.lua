@@ -128,4 +128,34 @@ function M.collect_buffer_configs()
     return buffer_configs
 end
 
+--- Gets ruler columns for a buffer based on filetype and buftype.
+---
+--- This function checks global exclusion lists for filetypes and buftypes. If the buffer is not
+--- excluded, it retrieves the buffer-specific configuration and returns the configured ruler
+--- columns when the ruler is enabled.
+---
+--- @param filetype string - The buffer filetype (e.g. `"lua"`, `"markdown"`).
+--- @param buftype string - The buffer type (e.g. `""`, `"nofile"`, `"terminal"`).
+---
+--- @return integer[]|nil - A list of ruler column positions if enabled, or `nil` when excluded or
+---     disabled.
+function M.get_ruler_columns(filetype, buftype)
+    local exclude_filetypes = hare.config.system.filetype.exclude
+    if vim.tbl_contains(exclude_filetypes, filetype) then
+        return nil
+    end
+
+    local exclude_buftypes = hare.config.system.buftype.exclude
+    if vim.tbl_contains(exclude_buftypes, buftype) then
+        return nil
+    end
+
+    local buffer_config = hare.fn.get_buffer_config(filetype)
+    if buffer_config.ruler.enabled then
+        return buffer_config.ruler.columns
+    else
+        return nil
+    end
+end
+
 return M
