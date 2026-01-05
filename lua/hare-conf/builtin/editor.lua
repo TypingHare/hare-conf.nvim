@@ -403,8 +403,9 @@ function M.apply_formatters()
                 ---@type string[]
                 local formatters = {}
                 for _, package_entry in pairs(formatter.packages) do
-                    if package_entry.package_name and package_entry.package_name ~= '' then
-                        table.insert(formatters, package_entry.package_name)
+                    local executable = package_entry.executable
+                    if executable and executable ~= '' then
+                        table.insert(formatters, executable)
                     end
                 end
                 formatters_by_ft[filetype] = formatters
