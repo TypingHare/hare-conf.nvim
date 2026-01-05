@@ -1,0 +1,25 @@
+# Lua is not a widely used programming language, and as of 2025 there is still
+# no universally accepted, unopinionated style guide for it. Developers in the
+# Neovim community often follow their own preferred conventions when writing
+# plugins. For this reason, I created my own Stylua configuration, which may
+# evolve over time. The main reasons behind my choices are:
+#
+#     1. A 4-space indentation style is common in many programming languages. It
+#        helps readers understand code structure quickly and consistently.
+#     2. A 100-column limit strikes a balance between narrow (80) and wide (120)
+#        formats. Modern displays offer more horizontal space, and developers
+#        often choose descriptive variable names over abbreviations, making a
+#        wider limit practical.
+#     3. Lua makes little distinction between single and double quotes. Single
+#        quotes require fewer keystrokes, since you do not need to press Shift.
+#     4. Removing unnecessary parentheses keeps Lua code cleaner and easier to
+#        read.
+#
+indent_type = "Spaces"
+indent_width = 4
+column_width = 100
+quote_style = "ForceSingle"
+call_parentheses = "None"
+
+[sort_requires]
+enabled = true
