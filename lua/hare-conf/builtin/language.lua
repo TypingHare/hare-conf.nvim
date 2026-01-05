@@ -173,7 +173,7 @@ M.config = {
     systemd = {
         filetypes = { 'systemd' },
         buffer_config = {
-            lsp = { name = 'systemd_ls' },
+            lsp = { name = 'systemd_lsp' },
             linter = { name = 'systemdlint' },
             tab = { width = 8 },
             ruler = { enabled = false },
