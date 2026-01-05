@@ -62,7 +62,7 @@ M.config = {
             ruler = { enabled = false },
         },
     },
-    camke = {
+    cmake = {
         filetypes = { 'cmake' },
         buffer_config = {
             treesitter = { name = 'cmake' },
