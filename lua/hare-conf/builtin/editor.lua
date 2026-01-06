@@ -2,51 +2,110 @@ local M = {}
 
 local hare = require 'hare-conf'
 
+local status_column_str = ''
+
 --- Sets up editor appearance configuration.
 ---
 --- This is the main entry point for editor appearance-related settings. It applies configuration
 --- for line numbers, sign column visibility, status column behavior, and fill characters.
 function M.setup()
-    M.apply_appearance()
+    M.apply_status_column()
+    M.apply_fill_chars()
     M.apply_diagnostic()
     M.apply_treesitter()
     M.apply_indent()
     M.apply_format_on_save()
 end
 
---- Applies all editor appearance settings.
+--- Applies and configure the editor `statuscolumn`.
 ---
---- This function acts as an orchestration layer for editor appearance features, delegating to more
---- focused helpers for each configurable area.
-function M.apply_appearance()
-    M.apply_line_number()
-    M.apply_sign_column()
-    M.apply_status_column()
-    M.apply_fill_chars()
-end
-
---- Applies line number configuration.
+--- This function builds and activates a custom `statuscolumn` based on
+--- `hare.config.editor.appearance.status_column`. It:
 ---
---- This function configures absolute and relative line numbers based on the editor appearance
---- configuration. Also applies highlight groups for normal and cursor line numbers.
-function M.apply_line_number()
-    local line_number = hare.config.editor.appearance.line_number
+---     - Enables or disables the status column globally
+---     - Configures sign column visibility
+---     - Configures line numbers (absolute / relative)
+---     - Applies line number highlight groups
+---     - Constructs the final `statuscolumn` format string
+---     - Installs an autocmd to apply the status column per-window,
+---
+--- respecting excluded filetypes and buftypes
+---
+--- When the status column is disabled, this function clears the option and exits early.
+---
+---@sideeffect Sets global and window-local Neovim options:
+---
+---     - `statuscolumn`
+---     - `signcolumn`
+---     - `number`
+---     - `relativenumber`
+---     - `cursorline`
+---     - `cursorlineopt`
+--- Creates an autocmd for `WinEnter`, `BufEnter`, and `TermOpen`.
+function M.apply_status_column()
+    local status_column = hare.config.editor.appearance.status_column
+    if not status_column.enabled then
+        vim.opt.statuscolumn = ''
+        return
+    end
 
+    -- Sign column configuration.
+    vim.opt.signcolumn = status_column.sign_column.enabled and 'yes' or 'no'
+
+    -- Line number configuration.
+    local line_number = status_column.line_number
+
+    vim.opt.cursorline = line_number.enabled
     vim.opt.number = line_number.enabled
     vim.opt.relativenumber = line_number.relative
     hare.fn.set_highlight('LineNr', line_number.highlight)
-    hare.fn.set_highlight('CursorLineNr', line_number.cursor_highlight)
-end
+    hare.fn.set_highlight('CursorLineNr', line_number.cursor_highlight or {
+        fg = '#ffcc66',
+        bold = true,
+    })
 
---- Applies sign column visibility configuration.
----
---- This function enables or disables the sign column according to the editor appearance settings.
-function M.apply_sign_column()
-    local sign_column = hare.config.editor.appearance.sign_column
-    vim.opt.signcolumn = sign_column.enabled and 'yes' or 'no'
-end
+    -- Specify what parts of the line to highlight when `cursorline` is enabled.
+    vim.opt.cursorlineopt = { 'number', 'line' }
 
-function M.apply_status_column() end
+    -- Build the status column string.
+    local _status_column_str = ''
+    if status_column.sign_column.enabled then
+        _status_column_str = _status_column_str .. '%s'
+    end
+
+    if line_number.enabled then
+        _status_column_str = _status_column_str
+            .. '%='
+            .. (
+                status_column.line_number.relative
+                    and '%{v:virtnum == 0 ? (v:relnum ? v:relnum : v:lnum) : \'\'}'
+                or '%{v:lnum}'
+            )
+    end
+
+    local suffix = status_column.suffix or ''
+    _status_column_str = _status_column_str .. suffix
+
+    -- Set the module status column string.
+    status_column_str = _status_column_str
+
+    vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter', 'TermOpen' }, {
+        callback = function(args)
+            local filetype = vim.bo[args.buf].filetype
+            local buftype = vim.bo[args.buf].buftype
+            local excluded_filetypes = hare.config.system.filetype.exclude
+            local excluded_buftypes = hare.config.system.buftype.exclude
+
+            local is_editable = not vim.tbl_contains(excluded_filetypes, filetype)
+                and not vim.tbl_contains(excluded_buftypes, buftype)
+            if is_editable then
+                vim.wo.statuscolumn = status_column_str
+            else
+                vim.wo.statuscolumn = '%s'
+            end
+        end,
+    })
+end
 
 --- Applies fill character configuration.
 ---

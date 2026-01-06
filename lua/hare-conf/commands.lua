@@ -26,7 +26,7 @@ local display_lua_code = function(lua_code, title)
         border = {
             style = 'rounded',
             text = {
-                top = title,
+                top = ' ' .. title .. ' ',
                 top_align = 'center',
             },
         },

@@ -95,25 +95,35 @@ const editor = {
   appearance: {
     $class_name: "hare.editor.Appearance",
     $description: "The appearance configurations for the editor.",
-    line_number: {
-      $class_name: "hare.editor.appearance.LineNumber",
-      enabled: entry(T.BOOL, "Whether to enable line numbers.", true),
-      relative: entry(T.BOOL, "Whether to enable relative line numbers.", true),
-      cursor_highlight: entry(
-        CLASS_HIGHLIGHT_GROUP,
-        "The highlight group for the current line number.",
-        null,
-      ),
-      highlight: entry(
-        CLASS_HIGHLIGHT_GROUP,
-        "The highlight group for line numbers.",
-        null,
-      ),
-    },
-    sign_column: {
-      $class_name: "hare.editor.appearance.SignColumn",
-      $description: "The configurations for the sign column.",
-      enabled: entry(T.BOOL, "Whether to enable the sign column.", true),
+    status_column: {
+      $class_name: "hare.editor.appearance.StatusColumn",
+      $description: "The configurations for the status column.",
+      enabled: entry(T.BOOL, "Whether to enable the status column.", true),
+      sign_column: {
+        $class_name: "hare.editor.appearance.SignColumn",
+        $description: "The configurations for the sign column.",
+        enabled: entry(T.BOOL, "Whether to enable the sign column.", true),
+      },
+      line_number: {
+        $class_name: "hare.editor.appearance.LineNumber",
+        enabled: entry(T.BOOL, "Whether to enable line numbers.", true),
+        relative: entry(
+          T.BOOL,
+          "Whether to enable relative line numbers.",
+          true,
+        ),
+        cursor_highlight: entry(
+          CLASS_HIGHLIGHT_GROUP,
+          "The highlight group for the current line number.",
+          null,
+        ),
+        highlight: entry(
+          CLASS_HIGHLIGHT_GROUP,
+          "The highlight group for line numbers.",
+          null,
+        ),
+      },
+      suffix: entry(T.STR, "The suffix for the status column.", "   "),
     },
     fill_chars: entry(
       T.STR,
