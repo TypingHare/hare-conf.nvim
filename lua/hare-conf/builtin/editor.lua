@@ -89,22 +89,25 @@ function M.apply_status_column()
     -- Set the module status column string.
     status_column_str = _status_column_str
 
-    vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter', 'TermOpen' }, {
-        callback = function(args)
-            local filetype = vim.bo[args.buf].filetype
-            local buftype = vim.bo[args.buf].buftype
-            local excluded_filetypes = hare.config.system.filetype.exclude
-            local excluded_buftypes = hare.config.system.buftype.exclude
+    vim.api.nvim_create_autocmd(
+        { 'VimEnter', 'WinEnter', 'WinLeave', 'BufWinEnter', 'BufEnter', 'TermOpen', 'FileType' },
+        {
+            callback = function(args)
+                local filetype = vim.bo[args.buf].filetype
+                local buftype = vim.bo[args.buf].buftype
+                local excluded_filetypes = hare.config.system.filetype.exclude
+                local excluded_buftypes = hare.config.system.buftype.exclude
 
-            local is_editable = not vim.tbl_contains(excluded_filetypes, filetype)
-                and not vim.tbl_contains(excluded_buftypes, buftype)
-            if is_editable then
-                vim.wo.statuscolumn = status_column_str
-            else
-                vim.wo.statuscolumn = '%s'
-            end
-        end,
-    })
+                local is_editable = not vim.tbl_contains(excluded_filetypes, filetype)
+                    and not vim.tbl_contains(excluded_buftypes, buftype)
+                if is_editable then
+                    vim.wo.statuscolumn = status_column_str
+                else
+                    vim.wo.statuscolumn = '%s'
+                end
+            end,
+        }
+    )
 end
 
 --- Applies fill character configuration.
