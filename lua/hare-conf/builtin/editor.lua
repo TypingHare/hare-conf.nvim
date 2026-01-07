@@ -149,30 +149,28 @@ end
 ---     - Disable highlighting for filetypes that explicitly opt out
 ---
 function M.apply_treesitter()
-    local treesitter = hare.config.editor.buffer.treesitter
     local buffer_configs = hare.fn.collect_buffer_configs()
 
-    -- Configure treesitter highlighting.
-    if treesitter.enabled and treesitter.highlight_enabled then
-        local ok_configs, nvim_treesitter_configs = pcall(require, 'nvim-treesitter.configs')
-        if ok_configs then
-            ---@type string[]
-            local disabled_highlight_filetypes = {}
-            for filetype, buffer_config in pairs(buffer_configs) do
-                if not buffer_config.treesitter.highlight_enabled then
-                    table.insert(disabled_highlight_filetypes, filetype)
-                end
-            end
-
-            ---@diagnostic disable-next-line missing-fields
-            nvim_treesitter_configs.setup {
-                highlight = {
-                    enable = true,
-                    disable = disabled_highlight_filetypes,
-                },
-            }
+    -- Collect filetypes that enables treesitter highlighting.
+    ---@type string[]
+    local enabled_highlight_filetypes = {}
+    for filetype, buffer_config in pairs(buffer_configs) do
+        if buffer_config.treesitter.enabled and buffer_config.treesitter.highlight_enabled then
+            table.insert(enabled_highlight_filetypes, filetype)
         end
     end
+
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = enabled_highlight_filetypes,
+        callback = function(args)
+            local bufnr = args.buf
+            if vim.bo[bufnr].buftype == 'nofile' then
+                return
+            end
+
+            vim.treesitter.start()
+        end,
+    })
 end
 
 --- Installs required Tree-sitter parsers based on buffer configuration.
