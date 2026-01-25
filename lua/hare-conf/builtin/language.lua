@@ -36,6 +36,12 @@ M.config = {
     javascript = {
         filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
         buffer_config = {
+            treesitter = {
+                'javascript',
+                'typescript',
+                'jsx',
+                'tsx',
+            },
             lsp = { name = 'ts_ls' },
             formatter = { name = 'prettier' },
             linter = { name = 'eslint-lsp' },
