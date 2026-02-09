@@ -183,6 +183,7 @@ M.config = {
     systemd = {
         filetypes = { 'systemd' },
         buffer_config = {
+            treesitter = { enabled = false },
             lsp = { name = 'systemd_lsp' },
             linter = { name = 'systemdlint' },
             tab = { width = 8 },
